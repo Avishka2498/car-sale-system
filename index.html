@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Nandana Enterprises - Pro Vehicle Management</title>
+    <title>Nandana Enterprises - Vehicle Management System</title>
     
     <!-- Modern Typography & Icons -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -34,446 +34,613 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
 
     <style>
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f1f5f9; }
-        .active-tab { background-color: #ffffff; color: #0f172a; font-weight: 700; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1); border: 1px solid #e2e8f0; }
-        .glass-panel { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); }
-        
-        /* Hide arrows in number input for PIN */
-        input[type=number]::-webkit-inner-spin-button, 
-        input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f8fafc; }
+        .active-tab { background-color: #ffffff; color: #0f172a; font-weight: 700; box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1); }
     </style>
 </head>
 <body class="text-slate-800 antialiased selection:bg-indigo-500 selection:text-white">
 
-    <!-- LOGIN SCREEN OVERLAY -->
-    <div id="loginScreen" class="fixed inset-0 bg-slate-900 z-50 flex items-center justify-center p-4">
-        <div class="bg-white p-8 rounded-3xl shadow-2xl w-full max-w-sm text-center transform transition-all">
-            <div class="bg-indigo-50 w-20 h-20 mx-auto rounded-full flex items-center justify-center mb-6 shadow-inner">
-                <i class="fa-solid fa-shield-halved text-4xl text-indigo-600"></i>
+    <!-- Top Navigation Header -->
+    <header class="bg-slate-900 text-white sticky top-0 z-40 shadow-md">
+        <div class="max-w-7xl mx-auto px-4 py-3.5 flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <div class="bg-indigo-600 p-2 rounded-xl text-white">
+                    <i class="fa-solid font-bold fa-car-side text-lg"></i>
+                </div>
+                <div>
+                    <h1 class="text-base md:text-lg font-bold tracking-tight leading-tight">NANDANA ENTERPRISES</h1>
+                    <p class="text-[10px] md:text-xs text-slate-400 font-medium">Vehicle Management & Sales System</p>
+                </div>
             </div>
-            <h2 class="text-2xl font-extrabold text-slate-900 mb-2">Admin Access</h2>
-            <p class="text-slate-500 text-sm font-medium mb-6">Enter your security PIN to continue</p>
-            
-            <input type="password" id="adminPin" maxlength="4" placeholder="••••" class="w-full text-center text-3xl tracking-[1em] p-4 bg-slate-50 border-2 border-slate-200 rounded-2xl mb-4 focus:border-indigo-500 focus:bg-white outline-none font-bold transition">
-            
-            <button onclick="checkPin()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-4 rounded-2xl shadow-lg hover:shadow-indigo-500/30 transition-all active:scale-[0.98]">
-                Unlock System <i class="fa-solid fa-arrow-right ml-2"></i>
-            </button>
-            <p id="pinError" class="text-rose-500 text-sm font-bold mt-4 hidden bg-rose-50 p-2 rounded-lg animate-pulse">Incorrect PIN! Try again.</p>
+            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> Cloud Sync Active
+            </span>
         </div>
-    </div>
+    </header>
 
-    <!-- MAIN APPLICATION (Initially Hidden by Login Overlay Z-Index) -->
-    <div id="mainApp">
-        <!-- Top Navigation Header -->
-        <header class="bg-slate-900 text-white sticky top-0 z-40 shadow-xl border-b border-slate-700">
-            <div class="max-w-7xl mx-auto px-4 py-3.5 flex justify-between items-center">
-                <div class="flex items-center gap-3">
-                    <div class="bg-gradient-to-br from-indigo-500 to-purple-600 p-2.5 rounded-xl text-white shadow-lg">
-                        <i class="fa-solid font-bold fa-car-side text-xl"></i>
-                    </div>
-                    <div>
-                        <h1 class="text-base md:text-xl font-extrabold tracking-tight leading-tight">NANDANA ENTERPRISES</h1>
-                        <p class="text-[10px] md:text-xs text-indigo-300 font-semibold tracking-wider uppercase">Pro Management System</p>
-                    </div>
+    <main class="max-w-7xl mx-auto px-4 py-6 space-y-6">
+
+        <!-- Metrics Dashboard Cards -->
+        <div class="grid grid-cols-3 gap-3 md:gap-5">
+            <div class="bg-white p-3.5 md:p-5 rounded-2xl border border-slate-200/80 shadow-sm flex flex-col justify-between">
+                <div class="flex items-center justify-between text-slate-500 mb-2">
+                    <span class="text-xs font-bold uppercase tracking-wider text-slate-400">Available</span>
+                    <i class="fa-solid fa-car text-indigo-500 text-sm md:text-base"></i>
                 </div>
-                <button onclick="location.reload()" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-600 transition">
-                    <i class="fa-solid fa-lock"></i> Lock
-                </button>
-            </div>
-        </header>
-
-        <main class="max-w-7xl mx-auto px-4 py-6 space-y-6">
-
-            <!-- Metrics Dashboard Cards -->
-            <div class="grid grid-cols-3 gap-3 md:gap-6">
-                <div class="bg-gradient-to-br from-white to-slate-50 p-4 md:p-6 rounded-3xl border border-slate-200 shadow-sm flex flex-col justify-between">
-                    <div class="flex items-center justify-between text-slate-500 mb-2">
-                        <span class="text-xs font-extrabold uppercase tracking-widest text-slate-400">Available</span>
-                        <div class="bg-indigo-100 p-2 rounded-lg"><i class="fa-solid fa-car text-indigo-600"></i></div>
-                    </div>
-                    <h2 id="count-available" class="text-3xl md:text-5xl font-black text-slate-800">0</h2>
-                </div>
-
-                <div class="bg-gradient-to-br from-white to-slate-50 p-4 md:p-6 rounded-3xl border border-slate-200 shadow-sm flex flex-col justify-between">
-                    <div class="flex items-center justify-between text-slate-500 mb-2">
-                        <span class="text-xs font-extrabold uppercase tracking-widest text-slate-400">Advanced</span>
-                        <div class="bg-amber-100 p-2 rounded-lg"><i class="fa-solid fa-bookmark text-amber-600"></i></div>
-                    </div>
-                    <h2 id="count-advanced" class="text-3xl md:text-5xl font-black text-slate-800">0</h2>
-                </div>
-
-                <div class="bg-gradient-to-br from-white to-slate-50 p-4 md:p-6 rounded-3xl border border-slate-200 shadow-sm flex flex-col justify-between">
-                    <div class="flex items-center justify-between text-slate-500 mb-2">
-                        <span class="text-xs font-extrabold uppercase tracking-widest text-slate-400">Sold</span>
-                        <div class="bg-emerald-100 p-2 rounded-lg"><i class="fa-solid fa-circle-check text-emerald-600"></i></div>
-                    </div>
-                    <h2 id="count-sold" class="text-3xl md:text-5xl font-black text-slate-800">0</h2>
-                </div>
+                <h2 id="count-available" class="text-2xl md:text-4xl font-extrabold text-slate-900">0</h2>
             </div>
 
-            <!-- Add Vehicle Form Card -->
-            <div class="bg-white rounded-3xl border border-slate-200 p-5 md:p-7 shadow-sm">
-                <h3 class="text-sm md:text-base font-extrabold text-slate-800 mb-5 flex items-center gap-2">
-                    <i class="fa-solid fa-circle-plus text-indigo-600 text-lg"></i> Add New Vehicle to Inventory
-                </h3>
-                <form id="addVehicleForm" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 md:gap-5">
-                    <div>
-                        <label class="block text-xs font-bold text-slate-500 mb-1.5">Registration Type</label>
-                        <select id="vType" onchange="toggleRegTypeFields()" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-bold focus:ring-2 focus:ring-indigo-500 focus:bg-white outline-none transition" required>
-                            <option value="Unregistered">Unregistered</option>
-                            <option value="Registered">Registered</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold text-slate-500 mb-1.5">Make & Model</label>
-                        <input type="text" id="vModel" placeholder="e.g. Honda Vezel" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-bold focus:ring-2 focus:ring-indigo-500 focus:bg-white outline-none transition" required>
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold text-slate-500 mb-1.5">Vehicle Color</label>
-                        <input type="text" id="vColor" placeholder="e.g. Pearl White" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-bold focus:ring-2 focus:ring-indigo-500 focus:bg-white outline-none transition" required>
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold text-slate-500 mb-1.5">Manufacture Year</label>
-                        <input type="number" id="vYear" placeholder="e.g. 2018" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-bold focus:ring-2 focus:ring-indigo-500 focus:bg-white outline-none transition" required>
-                    </div>
-
-                    <!-- Chassis No Container -->
-                    <div id="divChassis">
-                        <label id="lblChassis" class="block text-xs font-bold text-slate-500 mb-1.5">Chassis Number <span class="text-rose-500">*</span></label>
-                        <input type="text" id="vChassis" placeholder="Enter Chassis No" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-bold focus:ring-2 focus:ring-indigo-500 focus:bg-white outline-none transition" required>
-                    </div>
-
-                    <!-- Reg No Container -->
-                    <div id="divRegNo" class="hidden">
-                        <label id="lblRegNo" class="block text-xs font-bold text-slate-500 mb-1.5">Reg Number <span class="text-rose-500">*</span></label>
-                        <input type="text" id="vRegNo" placeholder="e.g. CAB-1234" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-bold focus:ring-2 focus:ring-indigo-500 focus:bg-white outline-none transition">
-                    </div>
-
-                    <div class="sm:col-span-2">
-                        <label class="block text-xs font-bold text-slate-500 mb-1.5">Mileage / Notes</label>
-                        <input type="text" id="vMileage" placeholder="e.g. 45,000 km" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-bold focus:ring-2 focus:ring-indigo-500 focus:bg-white outline-none transition">
-                    </div>
-                    <div class="sm:col-span-2 md:col-span-4 pt-2">
-                        <button type="submit" id="btnAddSubmit" class="w-full bg-slate-900 hover:bg-indigo-600 text-white font-extrabold py-3.5 rounded-xl shadow-md transition-all active:scale-[0.99] flex justify-center items-center gap-2">
-                            <i class="fa-solid fa-plus"></i> Add Vehicle to Inventory
-                        </button>
-                    </div>
-                </form>
+            <div class="bg-white p-3.5 md:p-5 rounded-2xl border border-slate-200/80 shadow-sm flex flex-col justify-between">
+                <div class="flex items-center justify-between text-slate-500 mb-2">
+                    <span class="text-xs font-bold uppercase tracking-wider text-slate-400">Advanced</span>
+                    <i class="fa-solid fa-bookmark text-amber-500 text-sm md:text-base"></i>
+                </div>
+                <h2 id="count-advanced" class="text-2xl md:text-4xl font-extrabold text-slate-900">0</h2>
             </div>
 
-            <!-- Navigation Segment Control -->
-            <div class="bg-slate-200/70 p-1.5 rounded-2xl flex gap-1 overflow-x-auto text-xs md:text-sm shadow-inner">
-                <button onclick="switchTab('available')" id="tab-available" class="flex-1 min-w-[120px] py-3 px-3 rounded-xl text-slate-600 font-bold transition text-center active-tab">
-                    Available Stock
-                </button>
-                <button onclick="switchTab('advanced')" id="tab-advanced" class="flex-1 min-w-[120px] py-3 px-3 rounded-xl text-slate-600 font-bold transition text-center">
-                    Advanced Deals
-                </button>
-                <button onclick="switchTab('sold')" id="tab-sold" class="flex-1 min-w-[120px] py-3 px-3 rounded-xl text-slate-600 font-bold transition text-center">
-                    Sold History & PDF
-                </button>
+            <div class="bg-white p-3.5 md:p-5 rounded-2xl border border-slate-200/80 shadow-sm flex flex-col justify-between">
+                <div class="flex items-center justify-between text-slate-500 mb-2">
+                    <span class="text-xs font-bold uppercase tracking-wider text-slate-400">Sold</span>
+                    <i class="fa-solid fa-circle-check text-emerald-500 text-sm md:text-base"></i>
+                </div>
+                <h2 id="count-sold" class="text-2xl md:text-4xl font-extrabold text-slate-900">0</h2>
             </div>
+        </div>
 
-            <!-- SECTION 1: AVAILABLE INVENTORY -->
-            <div id="section-available" class="space-y-4">
-                <!-- Search Bar for Available -->
-                <div class="bg-white p-3 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-3">
-                    <i class="fa-solid fa-magnifying-glass text-slate-400 pl-2"></i>
-                    <input type="text" id="searchAvailable" onkeyup="renderAll()" placeholder="Search Available Stock by Model, Color, Chassis..." class="w-full bg-transparent outline-none text-sm font-bold text-slate-700">
+        <!-- Add Vehicle Form Card -->
+        <div class="bg-white rounded-2xl border border-slate-200/80 p-4 md:p-6 shadow-sm">
+            <h3 class="text-sm md:text-base font-bold text-slate-800 mb-4 flex items-center gap-2">
+                <i class="fa-solid fa-circle-plus text-indigo-600"></i> Add New Vehicle to Inventory
+            </h3>
+            <form id="addVehicleForm" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 mb-1">Registration Type</label>
+                    <select id="vType" onchange="toggleRegValidation()" class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium focus:ring-2 focus:ring-indigo-500 focus:bg-white outline-none" required>
+                        <option value="Unregistered">Unregistered</option>
+                        <option value="Registered">Registered</option>
+                    </select>
                 </div>
-
-                <div id="cards-available" class="grid grid-cols-1 gap-3 md:hidden"></div>
-                <div class="hidden md:block bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
-                    <table class="w-full text-left text-sm">
-                        <thead class="bg-slate-50 text-slate-500 font-extrabold border-b border-slate-200 uppercase text-xs tracking-wider">
-                            <tr>
-                                <th class="p-4">Type</th>
-                                <th class="p-4">Make & Model</th>
-                                <th class="p-4">Color</th>
-                                <th class="p-4">Year</th>
-                                <th class="p-4">Chassis No</th>
-                                <th class="p-4">Reg No</th>
-                                <th class="p-4 text-right">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="tbl-available" class="divide-y divide-slate-100"></tbody>
-                    </table>
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 mb-1">Make & Model</label>
+                    <input type="text" id="vModel" placeholder="e.g. Toyota Premio" class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium focus:ring-2 focus:ring-indigo-500 focus:bg-white outline-none" required>
                 </div>
-            </div>
-
-            <!-- SECTION 2: ADVANCED VEHICLES -->
-            <div id="section-advanced" class="space-y-4 hidden">
-                <!-- Search Bar for Advanced -->
-                <div class="bg-white p-3 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-3">
-                    <i class="fa-solid fa-magnifying-glass text-slate-400 pl-2"></i>
-                    <input type="text" id="searchAdvanced" onkeyup="renderAll()" placeholder="Search Advanced Deals by Model, Customer Name..." class="w-full bg-transparent outline-none text-sm font-bold text-slate-700">
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 mb-1">Vehicle Color</label>
+                    <input type="text" id="vColor" placeholder="e.g. Pearl White / Black" class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium focus:ring-2 focus:ring-indigo-500 focus:bg-white outline-none" required>
                 </div>
-
-                <div id="cards-advanced" class="grid grid-cols-1 gap-3 md:hidden"></div>
-                <div class="hidden md:block bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
-                    <table class="w-full text-left text-sm">
-                        <thead class="bg-slate-50 text-slate-500 font-extrabold border-b border-slate-200 uppercase text-xs tracking-wider">
-                            <tr>
-                                <th class="p-4">Vehicle & Color</th>
-                                <th class="p-4">Customer Details</th>
-                                <th class="p-4">Sales Rep</th>
-                                <th class="p-4">Payment Method</th>
-                                <th class="p-4 text-right">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="tbl-advanced" class="divide-y divide-slate-100"></tbody>
-                    </table>
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 mb-1">Manufacture Year</label>
+                    <input type="number" id="vYear" placeholder="e.g. 2018" class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium focus:ring-2 focus:ring-indigo-500 focus:bg-white outline-none" required>
                 </div>
-            </div>
-
-            <!-- SECTION 3: SOLD HISTORY & REPORTS -->
-            <div id="section-sold" class="space-y-4 hidden">
-                <!-- Search & Filters Header Bar -->
-                <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-3">
-                    <div class="flex flex-col md:flex-row gap-3 items-stretch md:items-center justify-between">
-                        <!-- Search Input -->
-                        <div class="relative flex-1">
-                            <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3.5 text-slate-400 text-sm"></i>
-                            <input type="text" id="searchSold" onkeyup="renderSold()" placeholder="Search Sold Records..." class="w-full pl-10 pr-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-bold outline-none focus:ring-2 focus:ring-indigo-500">
-                        </div>
-
-                        <!-- Filter Controls & Action Buttons -->
-                        <div class="flex flex-wrap items-center gap-2">
-                            <!-- Rep Filter -->
-                            <select id="filterRep" onchange="renderSold()" class="p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold outline-none focus:ring-2 focus:ring-indigo-500">
-                                <option value="ALL">All Reps</option>
-                                <option value="N/A">N/A (Direct)</option>
-                                <option value="Thushan">Thushan</option>
-                                <option value="Aravinda">Aravinda</option>
-                                <option value="Nethwan">Nethwan</option>
-                                <option value="Prasanna">Prasanna</option>
-                                <option value="Sithum">Sithum</option>
-                            </select>
-
-                            <!-- Month Filter -->
-                            <div class="flex items-center gap-1 bg-slate-50 border border-slate-200 p-1.5 rounded-xl">
-                                <span class="text-[11px] font-bold text-slate-500 pl-1">Month:</span>
-                                <input type="month" id="filterMonth" onchange="renderSold()" class="bg-transparent text-xs font-bold outline-none cursor-pointer">
-                                <button onclick="clearMonthFilter()" class="text-slate-400 hover:text-slate-600 px-1 text-xs"><i class="fa-solid fa-circle-xmark"></i></button>
-                            </div>
-
-                            <!-- PDF Download Button -->
-                            <button onclick="downloadSoldPDF()" class="bg-rose-600 hover:bg-rose-700 text-white px-4 py-2.5 rounded-xl text-xs font-bold shadow-sm transition flex items-center gap-2">
-                                <i class="fa-solid fa-file-pdf"></i> PDF
-                            </button>
-
-                            <!-- Add Past Sale Button -->
-                            <button onclick="openPastSaleModal()" class="bg-slate-900 hover:bg-slate-800 text-white px-4 py-2.5 rounded-xl text-xs font-bold shadow-sm transition flex items-center gap-2">
-                                <i class="fa-solid fa-plus"></i> Past Sale
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Filter Count Banner -->
-                    <div class="flex items-center justify-between bg-indigo-50 border border-indigo-100 px-4 py-2.5 rounded-xl text-xs">
-                        <div class="flex items-center gap-2">
-                            <i class="fa-solid fa-chart-line text-indigo-600"></i>
-                            <span id="soldCountSummaryText" class="font-bold text-slate-700">Showing overall sales</span>
-                        </div>
-                        <span id="soldCountBadge" class="bg-indigo-600 text-white px-3 py-1 rounded-full font-extrabold">0 Sold</span>
-                    </div>
+                <div>
+                    <label id="lblChassis" class="block text-xs font-bold text-slate-500 mb-1">Chassis Number <span class="text-rose-500">*</span></label>
+                    <input type="text" id="vChassis" placeholder="Enter Chassis No" class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium focus:ring-2 focus:ring-indigo-500 focus:bg-white outline-none" required>
                 </div>
-
-                <div id="cards-sold" class="grid grid-cols-1 gap-3 md:hidden"></div>
-                <div class="hidden md:block bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
-                    <table class="w-full text-left text-sm">
-                        <thead class="bg-slate-50 text-slate-500 font-extrabold border-b border-slate-200 uppercase text-xs tracking-wider">
-                            <tr>
-                                <th class="p-4">Sold Date</th>
-                                <th class="p-4">Vehicle Details</th>
-                                <th class="p-4">Reg / Chassis No</th>
-                                <th class="p-4">Customer</th>
-                                <th class="p-4">Sales Rep</th>
-                                <th class="p-4">Payment</th>
-                                <th class="p-4 text-right">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="tbl-sold" class="divide-y divide-slate-100"></tbody>
-                    </table>
+                <div>
+                    <label id="lblRegNo" class="block text-xs font-bold text-slate-500 mb-1">Reg Number (Optional)</label>
+                    <input type="text" id="vRegNo" placeholder="e.g. CAB-1234" class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium focus:ring-2 focus:ring-indigo-500 focus:bg-white outline-none">
                 </div>
-            </div>
-
-        </main>
-    </div>
-
-    <!-- UNIVERSAL EDIT MODAL -->
-    <div id="universalEditModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex justify-center items-center hidden z-50 p-4">
-        <div class="bg-white rounded-3xl max-w-lg w-full p-6 shadow-2xl border border-slate-100 space-y-4 max-h-[90vh] overflow-y-auto">
-            <div class="flex justify-between items-center border-b pb-3">
-                <h3 class="font-black text-slate-900 text-lg flex items-center gap-2">
-                    <i class="fa-solid fa-pen-to-square text-indigo-600"></i> Edit Record
-                </h3>
-                <button onclick="closeUniversalEdit()" class="text-slate-400 hover:text-slate-700 bg-slate-100 p-2 rounded-full transition"><i class="fa-solid fa-xmark"></i></button>
-            </div>
-            <form id="universalEditForm" class="space-y-4">
-                <input type="hidden" id="editUniId">
-                <input type="hidden" id="editUniStatus">
-
-                <!-- Basic Vehicle Info -->
-                <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 space-y-3">
-                    <h4 class="text-[10px] font-extrabold uppercase text-slate-400 tracking-wider">Vehicle Details</h4>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                        <div>
-                            <label class="block text-xs font-bold text-slate-600 mb-1">Make & Model</label>
-                            <input type="text" id="editUniModel" class="w-full p-2.5 border rounded-lg text-sm font-bold outline-none focus:border-indigo-500" required>
-                        </div>
-                        <div>
-                            <label class="block text-xs font-bold text-slate-600 mb-1">Color</label>
-                            <input type="text" id="editUniColor" class="w-full p-2.5 border rounded-lg text-sm font-bold outline-none focus:border-indigo-500" required>
-                        </div>
-                        <div>
-                            <label class="block text-xs font-bold text-slate-600 mb-1">Year</label>
-                            <input type="number" id="editUniYear" class="w-full p-2.5 border rounded-lg text-sm font-bold outline-none focus:border-indigo-500">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-bold text-slate-600 mb-1">Type</label>
-                            <select id="editUniType" class="w-full p-2.5 border rounded-lg text-sm font-bold outline-none focus:border-indigo-500">
-                                <option value="Unregistered">Unregistered</option>
-                                <option value="Registered">Registered</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label class="block text-xs font-bold text-slate-600 mb-1">Chassis No</label>
-                            <input type="text" id="editUniChassis" class="w-full p-2.5 border rounded-lg text-sm font-bold outline-none focus:border-indigo-500">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-bold text-slate-600 mb-1">Reg No</label>
-                            <input type="text" id="editUniRegNo" class="w-full p-2.5 border rounded-lg text-sm font-bold outline-none focus:border-indigo-500">
-                        </div>
-                    </div>
+                <div class="sm:col-span-2">
+                    <label class="block text-xs font-bold text-slate-500 mb-1">Mileage / Notes</label>
+                    <input type="text" id="vMileage" placeholder="e.g. 45,000 km" class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium focus:ring-2 focus:ring-indigo-500 focus:bg-white outline-none">
                 </div>
-
-                <!-- Customer & Deal Info -->
-                <div id="editUniCustomerSection" class="bg-indigo-50/50 p-3 rounded-xl border border-indigo-100 space-y-3 hidden">
-                    <h4 class="text-[10px] font-extrabold uppercase text-indigo-400 tracking-wider">Deal Details</h4>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                        <div>
-                            <label class="block text-xs font-bold text-slate-600 mb-1">Customer Name</label>
-                            <input type="text" id="editUniCustName" class="w-full p-2.5 border rounded-lg text-sm font-bold outline-none focus:border-indigo-500">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-bold text-slate-600 mb-1">Phone</label>
-                            <input type="text" id="editUniCustPhone" class="w-full p-2.5 border rounded-lg text-sm font-bold outline-none focus:border-indigo-500">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-bold text-slate-600 mb-1">Sales Rep</label>
-                            <select id="editUniSalesRep" class="w-full p-2.5 border rounded-lg text-sm font-bold outline-none focus:border-indigo-500">
-                                <option value="N/A">N/A (Direct)</option>
-                                <option value="Thushan">Thushan</option>
-                                <option value="Aravinda">Aravinda</option>
-                                <option value="Nethwan">Nethwan</option>
-                                <option value="Prasanna">Prasanna</option>
-                                <option value="Sithum">Sithum</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label class="block text-xs font-bold text-slate-600 mb-1">Pay Method</label>
-                            <select id="editUniPayMethod" onchange="toggleUniPayFields(this.value)" class="w-full p-2.5 border rounded-lg text-sm font-bold outline-none focus:border-indigo-500">
-                                <option value="Cash">Cash</option>
-                                <option value="Leasing">Leasing</option>
-                                <option value="Exchange">Exchange / Trade-In</option>
-                                <option value="Cash + Exchange">Cash + Exchange</option>
-                                <option value="Leasing + Exchange">Leasing + Exchange</option>
-                            </select>
-                        </div>
-                    </div>
-                    
-                    <div id="editUniLeaseFields" class="hidden grid grid-cols-1 md:grid-cols-2 gap-3">
-                        <div>
-                            <label class="block text-xs font-bold text-slate-600 mb-1">Lease Company</label>
-                            <input type="text" id="editUniLeaseComp" class="w-full p-2.5 border rounded-lg text-sm font-bold outline-none focus:border-indigo-500">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-bold text-slate-600 mb-1">Officer</label>
-                            <input type="text" id="editUniLeaseOfficer" class="w-full p-2.5 border rounded-lg text-sm font-bold outline-none focus:border-indigo-500">
-                        </div>
-                    </div>
-                    <div id="editUniExFields" class="hidden">
-                        <label class="block text-xs font-bold text-slate-600 mb-1">Exchange Vehicle Info</label>
-                        <input type="text" id="editUniExModel" class="w-full p-2.5 border rounded-lg text-sm font-bold outline-none focus:border-indigo-500">
-                    </div>
-                </div>
-
-                <!-- Sold Date -->
-                <div id="editUniSoldSection" class="bg-emerald-50 p-3 rounded-xl border border-emerald-200 hidden">
-                    <label class="block text-xs font-bold text-slate-600 mb-1">Sold Date</label>
-                    <input type="date" id="editUniSoldDate" class="w-full p-2.5 border rounded-lg text-sm font-bold outline-none focus:border-indigo-500">
-                </div>
-
-                <div class="flex justify-end gap-3 pt-4 border-t">
-                    <button type="button" onclick="closeUniversalEdit()" class="px-5 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl text-sm transition">Cancel</button>
-                    <button type="submit" id="btnUniEditSubmit" class="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl text-sm shadow-md transition flex items-center gap-2">
-                        <i class="fa-solid fa-check"></i> Update Record
+                <div class="sm:col-span-2 md:col-span-4 pt-1">
+                    <button type="submit" id="btnAddSubmit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 rounded-xl shadow-sm transition active:scale-[0.99] flex justify-center items-center gap-2">
+                        <i class="fa-solid fa-plus"></i> Add Vehicle to Stock
                     </button>
                 </div>
             </form>
         </div>
+
+        <!-- Navigation Segment Control -->
+        <div class="bg-slate-200/80 p-1.5 rounded-2xl flex gap-1 overflow-x-auto text-xs md:text-sm">
+            <button onclick="switchTab('available')" id="tab-available" class="flex-1 min-w-[110px] py-2.5 px-3 rounded-xl text-slate-600 font-medium transition text-center active-tab">
+                Available Stock
+            </button>
+            <button onclick="switchTab('advanced')" id="tab-advanced" class="flex-1 min-w-[110px] py-2.5 px-3 rounded-xl text-slate-600 font-medium transition text-center">
+                Advanced
+            </button>
+            <button onclick="switchTab('sold')" id="tab-sold" class="flex-1 min-w-[110px] py-2.5 px-3 rounded-xl text-slate-600 font-medium transition text-center">
+                Sold History
+            </button>
+        </div>
+
+        <!-- SECTION 1: AVAILABLE INVENTORY -->
+        <div id="section-available" class="space-y-4">
+            <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm">
+                <div class="relative">
+                    <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3 text-slate-400 text-xs"></i>
+                    <input type="text" id="searchAvailable" onkeyup="renderAvailable()" placeholder="Search Stock by Model, Color, Chassis, Reg No, or Type..." class="w-full pl-9 pr-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold outline-none focus:ring-2 focus:ring-indigo-500">
+                </div>
+            </div>
+
+            <div id="cards-available" class="grid grid-cols-1 gap-3 md:hidden"></div>
+            <div class="hidden md:block bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden">
+                <p class="text-xs text-slate-400 font-semibold p-3 bg-slate-50 border-b"><i class="fa-solid fa-circle-info mr-1"></i> ඕනෑම Vehicle Record එකක් උඩ Click කර මුළු විස්තර බලාගන්න.</p>
+                <table class="w-full text-left text-sm">
+                    <thead class="bg-slate-50 text-slate-500 font-bold border-b border-slate-200">
+                        <tr>
+                            <th class="p-4">Type</th>
+                            <th class="p-4">Make & Model</th>
+                            <th class="p-4">Color</th>
+                            <th class="p-4">Year</th>
+                            <th class="p-4">Chassis No</th>
+                            <th class="p-4">Reg No</th>
+                            <th class="p-4 text-right">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbl-available" class="divide-y divide-slate-100"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- SECTION 2: ADVANCED VEHICLES -->
+        <div id="section-advanced" class="space-y-4 hidden">
+            <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm">
+                <div class="relative">
+                    <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3 text-slate-400 text-xs"></i>
+                    <input type="text" id="searchAdvanced" onkeyup="renderAdvanced()" placeholder="Search Advanced Vehicles by Model, Customer, Rep, or Payment..." class="w-full pl-9 pr-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold outline-none focus:ring-2 focus:ring-indigo-500">
+                </div>
+            </div>
+
+            <div id="cards-advanced" class="grid grid-cols-1 gap-3 md:hidden"></div>
+            <div class="hidden md:block bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden">
+                <table class="w-full text-left text-sm">
+                    <thead class="bg-slate-50 text-slate-500 font-bold border-b border-slate-200">
+                        <tr>
+                            <th class="p-4">Vehicle & Color</th>
+                            <th class="p-4">Customer Details</th>
+                            <th class="p-4">Sales Rep</th>
+                            <th class="p-4">Payment Method</th>
+                            <th class="p-4">Lease / Exchange Info</th>
+                            <th class="p-4 text-right">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbl-advanced" class="divide-y divide-slate-100"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- SECTION 3: SOLD HISTORY & REPORTS -->
+        <div id="section-sold" class="space-y-4 hidden">
+            <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm space-y-3">
+                <div class="flex flex-col md:flex-row gap-3 items-stretch md:items-center justify-between">
+                    <div class="relative flex-1">
+                        <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3 text-slate-400 text-xs"></i>
+                        <input type="text" id="searchSold" onkeyup="renderSold()" placeholder="Search Sold Vehicles by Model, Color, Chassis, Reg No, or Customer..." class="w-full pl-9 pr-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold outline-none focus:ring-2 focus:ring-indigo-500">
+                    </div>
+
+                    <div class="flex flex-wrap items-center gap-2">
+                        <select id="filterRep" onchange="renderSold()" class="p-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold outline-none focus:ring-2 focus:ring-indigo-500">
+                            <option value="ALL">All Sales Reps</option>
+                            <option value="Thushan">Thushan</option>
+                            <option value="Aravinda">Aravinda</option>
+                            <option value="Nethwan">Nethwan</option>
+                            <option value="Prasanna">Prasanna</option>
+                            <option value="Sithum">Sithum</option>
+                        </select>
+
+                        <div class="flex items-center gap-1 bg-slate-50 border border-slate-200 p-1 rounded-xl">
+                            <span class="text-[11px] font-bold text-slate-500 pl-1">Month:</span>
+                            <input type="month" id="filterMonth" onchange="renderSold()" class="bg-transparent text-xs font-bold outline-none cursor-pointer">
+                            <button onclick="clearMonthFilter()" title="Clear Month" class="text-slate-400 hover:text-slate-600 px-1 text-xs"><i class="fa-solid fa-circle-xmark"></i></button>
+                        </div>
+
+                        <button onclick="downloadSoldPDF()" class="bg-rose-600 hover:bg-rose-700 text-white px-3.5 py-2 rounded-xl text-xs font-bold shadow-sm transition flex items-center gap-1.5">
+                            <i class="fa-solid fa-file-pdf"></i> Download PDF
+                        </button>
+
+                        <button onclick="openPastSaleModal()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3.5 py-2 rounded-xl text-xs font-bold shadow-sm transition flex items-center gap-1.5">
+                            <i class="fa-solid fa-plus"></i> Past Sale
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="cards-sold" class="grid grid-cols-1 gap-3 md:hidden"></div>
+            <div class="hidden md:block bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden">
+                <p class="text-xs text-slate-400 font-semibold p-3 bg-slate-50 border-b"><i class="fa-solid fa-circle-info mr-1"></i> ඕනෑම Record එකක් උඩ Click කර මුළු විස්තර බලාගන්න.</p>
+                <table class="w-full text-left text-sm">
+                    <thead class="bg-slate-50 text-slate-500 font-bold border-b border-slate-200">
+                        <tr>
+                            <th class="p-4">Sold Date</th>
+                            <th class="p-4">Vehicle Details</th>
+                            <th class="p-4">Customer</th>
+                            <th class="p-4">Sales Rep</th>
+                            <th class="p-4">Payment Method</th>
+                            <th class="p-4 text-right">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbl-sold" class="divide-y divide-slate-100"></tbody>
+                </table>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- MODAL 1: VIEW AVAILABLE VEHICLE DETAILS -->
+    <div id="availableDetailModal" class="fixed inset-0 bg-slate-950/60 backdrop-blur-sm flex justify-center items-center hidden z-50 p-4">
+        <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-xl border border-slate-100 space-y-4">
+            <div class="flex justify-between items-center border-b pb-3">
+                <h3 class="font-extrabold text-slate-900 text-base flex items-center gap-2">
+                    <i class="fa-solid fa-car text-indigo-600"></i> Available Vehicle Details
+                </h3>
+                <button onclick="closeAvailableDetailModal()" class="text-slate-400 hover:text-slate-600 p-1"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            <div id="availableDetailContent" class="space-y-3"></div>
+            <div class="pt-3 border-t flex justify-end">
+                <button onclick="closeAvailableDetailModal()" class="w-full bg-slate-800 hover:bg-slate-900 text-white font-bold py-2.5 rounded-xl text-xs shadow-sm">Close</button>
+            </div>
+        </div>
     </div>
 
-    <!-- Advance Modal -->
-    <div id="advanceModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex justify-center items-center hidden z-50 p-4">
+    <!-- MODAL 2: EDIT AVAILABLE STOCK VEHICLE -->
+    <div id="editAvailableModal" class="fixed inset-0 bg-slate-950/60 backdrop-blur-sm flex justify-center items-center hidden z-50 p-4">
         <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-xl border border-slate-100 space-y-4 max-h-[90vh] overflow-y-auto">
-            <h3 class="font-black text-slate-900 text-lg">Advance Reservation</h3>
-            <form id="advanceForm" class="space-y-3">
-                <input type="hidden" id="advVehicleId">
-                <div><label class="block text-xs font-bold mb-1">Customer Name</label><input type="text" id="custName" class="w-full p-2.5 bg-slate-50 border rounded-xl text-sm font-bold" required></div>
-                <div><label class="block text-xs font-bold mb-1">Phone</label><input type="text" id="custPhone" class="w-full p-2.5 bg-slate-50 border rounded-xl text-sm font-bold" required></div>
-                <div><label class="block text-xs font-bold mb-1">Sales Rep</label><select id="salesRep" class="w-full p-2.5 bg-slate-50 border rounded-xl text-sm font-bold"><option value="N/A">N/A</option><option value="Thushan">Thushan</option><option value="Aravinda">Aravinda</option><option value="Nethwan">Nethwan</option><option value="Prasanna">Prasanna</option><option value="Sithum">Sithum</option></select></div>
-                <div><label class="block text-xs font-bold mb-1">Pay Method</label><select id="payMethod" onchange="togglePayFields(this.value, 'adv')" class="w-full p-2.5 bg-slate-50 border rounded-xl text-sm font-bold"><option value="Cash">Cash</option><option value="Leasing">Leasing</option><option value="Exchange">Exchange</option><option value="Cash + Exchange">Cash + Exchange</option><option value="Leasing + Exchange">Leasing + Exchange</option></select></div>
-                <div id="advLeasingFields" class="hidden space-y-2 pl-2 border-l-2 border-indigo-500"><input type="text" id="leaseComp" placeholder="Leasing Company" class="w-full p-2.5 border rounded-xl text-sm font-bold"><input type="text" id="leaseOfficer" placeholder="Officer" class="w-full p-2.5 border rounded-xl text-sm font-bold"></div>
-                <div id="advExchangeFields" class="hidden space-y-2 pl-2 border-l-2 border-amber-500"><input type="text" id="exModel" placeholder="Exchange Vehicle" class="w-full p-2.5 border rounded-xl text-sm font-bold"></div>
-                <div class="flex justify-end gap-2 pt-3 border-t"><button type="button" onclick="closeModal()" class="px-4 py-2 bg-slate-100 font-bold rounded-xl text-xs">Cancel</button><button type="submit" class="px-4 py-2 bg-amber-500 text-white font-bold rounded-xl text-xs shadow-sm">Confirm</button></div>
+            <div class="flex justify-between items-center border-b pb-3">
+                <h3 class="font-extrabold text-slate-900 text-base flex items-center gap-2">
+                    <i class="fa-solid fa-pen-to-square text-indigo-600"></i> Edit Stock Vehicle
+                </h3>
+                <button onclick="closeEditAvailableModal()" class="text-slate-400 hover:text-slate-600 p-1"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            <form id="editAvailableForm" class="space-y-3">
+                <input type="hidden" id="editAvailId">
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 mb-1">Registration Type</label>
+                    <select id="editAvailType" class="w-full p-2.5 bg-slate-50 border rounded-xl text-sm font-medium outline-none focus:ring-2 focus:ring-indigo-500">
+                        <option value="Unregistered">Unregistered</option>
+                        <option value="Registered">Registered</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 mb-1">Make & Model</label>
+                    <input type="text" id="editAvailModel" class="w-full p-2.5 bg-slate-50 border rounded-xl text-sm font-medium outline-none focus:ring-2 focus:ring-indigo-500" required>
+                </div>
+                <div class="grid grid-cols-2 gap-2">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 mb-1">Color</label>
+                        <input type="text" id="editAvailColor" class="w-full p-2.5 bg-slate-50 border rounded-xl text-sm font-medium outline-none focus:ring-2 focus:ring-indigo-500" required>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 mb-1">Year</label>
+                        <input type="number" id="editAvailYear" class="w-full p-2.5 bg-slate-50 border rounded-xl text-sm font-medium outline-none focus:ring-2 focus:ring-indigo-500" required>
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-2">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 mb-1">Chassis Number</label>
+                        <input type="text" id="editAvailChassis" class="w-full p-2.5 bg-slate-50 border rounded-xl text-sm font-medium outline-none focus:ring-2 focus:ring-indigo-500" required>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 mb-1">Reg Number</label>
+                        <input type="text" id="editAvailRegNo" class="w-full p-2.5 bg-slate-50 border rounded-xl text-sm font-medium outline-none focus:ring-2 focus:ring-indigo-500">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 mb-1">Mileage / Notes</label>
+                    <input type="text" id="editAvailMileage" class="w-full p-2.5 bg-slate-50 border rounded-xl text-sm font-medium outline-none focus:ring-2 focus:ring-indigo-500">
+                </div>
+                <div class="flex justify-end gap-2 pt-3 border-t">
+                    <button type="button" onclick="closeEditAvailableModal()" class="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl text-xs">Cancel</button>
+                    <button type="submit" id="btnEditAvailSubmit" class="px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl text-xs shadow-sm">Save Changes</button>
+                </div>
             </form>
         </div>
     </div>
 
-    <!-- Past Sale Modal -->
-    <div id="pastSaleModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex justify-center items-center hidden z-50 p-4">
+    <!-- MODAL 3: EDIT ADVANCED VEHICLE -->
+    <div id="editAdvancedModal" class="fixed inset-0 bg-slate-950/60 backdrop-blur-sm flex justify-center items-center hidden z-50 p-4">
         <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-xl border border-slate-100 space-y-4 max-h-[90vh] overflow-y-auto">
-            <h3 class="font-black text-slate-900 text-lg">Add Past Sale</h3>
+            <div class="flex justify-between items-center border-b pb-3">
+                <h3 class="font-extrabold text-slate-900 text-base flex items-center gap-2">
+                    <i class="fa-solid fa-pen-to-square text-amber-600"></i> Edit Advanced Vehicle Info
+                </h3>
+                <button onclick="closeEditAdvancedModal()" class="text-slate-400 hover:text-slate-600 p-1"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            <form id="editAdvancedForm" class="space-y-3">
+                <input type="hidden" id="editAdvId">
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 mb-1">Customer Name</label>
+                    <input type="text" id="editAdvCustName" class="w-full p-2.5 bg-slate-50 border rounded-xl text-sm font-medium outline-none focus:ring-2 focus:ring-indigo-500" required>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 mb-1">Customer Phone</label>
+                    <input type="text" id="editAdvCustPhone" class="w-full p-2.5 bg-slate-50 border rounded-xl text-sm font-medium outline-none focus:ring-2 focus:ring-indigo-500" required>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 mb-1">Sales Representative</label>
+                    <select id="editAdvSalesRep" class="w-full p-2.5 bg-slate-50 border rounded-xl text-sm font-medium outline-none focus:ring-2 focus:ring-indigo-500" required>
+                        <option value="Thushan">Thushan</option>
+                        <option value="Aravinda">Aravinda</option>
+                        <option value="Nethwan">Nethwan</option>
+                        <option value="Prasanna">Prasanna</option>
+                        <option value="Sithum">Sithum</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 mb-1">Payment Method</label>
+                    <select id="editAdvPayMethod" onchange="togglePayFields(this.value, 'editAdv')" class="w-full p-2.5 bg-slate-50 border rounded-xl text-sm font-medium outline-none focus:ring-2 focus:ring-indigo-500">
+                        <option value="Cash">Cash</option>
+                        <option value="Leasing">Leasing</option>
+                        <option value="Exchange">Exchange / Trade-In</option>
+                        <option value="Cash + Exchange">Cash + Exchange</option>
+                        <option value="Leasing + Exchange">Leasing + Exchange</option>
+                    </select>
+                </div>
+
+                <div id="editAdvLeasingFields" class="hidden space-y-2 border-l-2 border-indigo-500 pl-3 pt-1">
+                    <p class="text-[11px] font-bold text-indigo-600">Leasing Details</p>
+                    <input type="text" id="editAdvLeaseComp" placeholder="Leasing Company" class="w-full p-2.5 bg-slate-50 border rounded-xl text-sm font-medium">
+                    <input type="text" id="editAdvLeaseOfficer" placeholder="Branch / Officer Details" class="w-full p-2.5 bg-slate-50 border rounded-xl text-sm font-medium">
+                </div>
+
+                <div id="editAdvExchangeFields" class="hidden space-y-2 border-l-2 border-amber-500 pl-3 pt-1">
+                    <p class="text-[11px] font-bold text-amber-600">Exchange Vehicle Info</p>
+                    <input type="text" id="editAdvExModel" placeholder="Exchange Vehicle Model & Reg No" class="w-full p-2.5 bg-slate-50 border rounded-xl text-sm font-medium">
+                </div>
+
+                <div class="flex justify-end gap-2 pt-3 border-t">
+                    <button type="button" onclick="closeEditAdvancedModal()" class="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl text-xs">Cancel</button>
+                    <button type="submit" id="btnEditAdvSubmit" class="px-4 py-2.5 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-xl text-xs shadow-sm">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL 4: VIEW FULL SOLD DETAILS -->
+    <div id="soldDetailModal" class="fixed inset-0 bg-slate-950/60 backdrop-blur-sm flex justify-center items-center hidden z-50 p-4">
+        <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-xl border border-slate-100 space-y-4">
+            <div class="flex justify-between items-center border-b pb-3">
+                <h3 class="font-extrabold text-slate-900 text-base flex items-center gap-2">
+                    <i class="fa-solid fa-file-invoice text-indigo-600"></i> Sold Sale Details
+                </h3>
+                <button onclick="closeSoldDetailModal()" class="text-slate-400 hover:text-slate-600 p-1"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            
+            <div id="soldDetailContent" class="space-y-3"></div>
+
+            <div class="pt-3 border-t flex justify-end">
+                <button onclick="closeSoldDetailModal()" class="w-full bg-slate-800 hover:bg-slate-900 text-white font-bold py-2.5 rounded-xl text-xs shadow-sm">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 5: ADVANCING VEHICLE -->
+    <div id="advanceModal" class="fixed inset-0 bg-slate-950/60 backdrop-blur-sm flex justify-center items-center hidden z-50 p-4">
+        <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-xl border border-slate-100 space-y-4 max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center border-b pb-3">
+                <h3 class="font-extrabold text-slate-900 text-base">Advance Vehicle Reservation</h3>
+                <button onclick="closeModal()" class="text-slate-400 hover:text-slate-600 p-1"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            <form id="advanceForm" class="space-y-3">
+                <input type="hidden" id="advVehicleId">
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 mb-1">Customer Name</label>
+                    <input type="text" id="custName" placeholder="Enter full name" class="w-full p-2.5 bg-slate-50 border rounded-xl text-sm font-medium outline-none focus:ring-2 focus:ring-indigo-500" required>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 mb-1">Customer Phone</label>
+                    <input type="text" id="custPhone" placeholder="Enter phone number" class="w-full p-2.5 bg-slate-50 border rounded-xl text-sm font-medium outline-none focus:ring-2 focus:ring-indigo-500" required>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 mb-1">Sales Representative</label>
+                    <select id="salesRep" class="w-full p-2.5 bg-slate-50 border rounded-xl text-sm font-medium outline-none focus:ring-2 focus:ring-indigo-500" required>
+                        <option value="Thushan">Thushan</option>
+                        <option value="Aravinda">Aravinda</option>
+                        <option value="Nethwan">Nethwan</option>
+                        <option value="Prasanna">Prasanna</option>
+                        <option value="Sithum">Sithum</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 mb-1">Payment Method</label>
+                    <select id="payMethod" onchange="togglePayFields(this.value, 'adv')" class="w-full p-2.5 bg-slate-50 border rounded-xl text-sm font-medium outline-none focus:ring-2 focus:ring-indigo-500">
+                        <option value="Cash">Cash</option>
+                        <option value="Leasing">Leasing</option>
+                        <option value="Exchange">Exchange / Trade-In</option>
+                        <option value="Cash + Exchange">Cash + Exchange</option>
+                        <option value="Leasing + Exchange">Leasing + Exchange</option>
+                    </select>
+                </div>
+
+                <div id="advLeasingFields" class="hidden space-y-2 border-l-2 border-indigo-500 pl-3 pt-1">
+                    <p class="text-[11px] font-bold text-indigo-600">Leasing Details</p>
+                    <input type="text" id="leaseComp" placeholder="Leasing Company (e.g. LB Finance)" class="w-full p-2.5 bg-slate-50 border rounded-xl text-sm font-medium">
+                    <input type="text" id="leaseOfficer" placeholder="Branch / Officer Details" class="w-full p-2.5 bg-slate-50 border rounded-xl text-sm font-medium">
+                </div>
+
+                <div id="advExchangeFields" class="hidden space-y-2 border-l-2 border-amber-500 pl-3 pt-1">
+                    <p class="text-[11px] font-bold text-amber-600">Exchange Vehicle Info</p>
+                    <input type="text" id="exModel" placeholder="Exchange Vehicle Model & Reg No" class="w-full p-2.5 bg-slate-50 border rounded-xl text-sm font-medium">
+                </div>
+
+                <div class="flex justify-end gap-2 pt-3 border-t">
+                    <button type="button" onclick="closeModal()" class="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl text-xs">Cancel</button>
+                    <button type="submit" id="btnAdvSubmit" class="px-4 py-2.5 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-xl text-xs shadow-sm">Confirm Advance</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL 6: DIRECT PAST SALE -->
+    <div id="pastSaleModal" class="fixed inset-0 bg-slate-950/60 backdrop-blur-sm flex justify-center items-center hidden z-50 p-4">
+        <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-xl border border-slate-100 space-y-4 max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center border-b pb-3">
+                <h3 class="font-extrabold text-slate-900 text-base">+ Add Past Direct Sale</h3>
+                <button onclick="closePastSaleModal()" class="text-slate-400 hover:text-slate-600 p-1"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
             <form id="pastSaleForm" class="space-y-3">
-                <input type="text" id="pastModel" placeholder="Model" class="w-full p-2.5 border rounded-xl text-sm font-bold" required>
-                <input type="text" id="pastColor" placeholder="Color" class="w-full p-2.5 border rounded-xl text-sm font-bold" required>
-                <div class="grid grid-cols-2 gap-2"><input type="text" id="pastChassis" placeholder="Chassis No" class="w-full p-2.5 border rounded-xl text-sm font-bold"><input type="text" id="pastRegNo" placeholder="Reg No" class="w-full p-2.5 border rounded-xl text-sm font-bold"></div>
-                <input type="text" id="pastCustName" placeholder="Customer" class="w-full p-2.5 border rounded-xl text-sm font-bold" required>
-                <input type="text" id="pastCustPhone" placeholder="Phone" class="w-full p-2.5 border rounded-xl text-sm font-bold">
-                <select id="pastSalesRep" class="w-full p-2.5 border rounded-xl text-sm font-bold"><option value="N/A">N/A</option><option value="Thushan">Thushan</option><option value="Aravinda">Aravinda</option><option value="Nethwan">Nethwan</option><option value="Prasanna">Prasanna</option><option value="Sithum">Sithum</option></select>
-                <select id="pastPayMethod" onchange="togglePayFields(this.value, 'past')" class="w-full p-2.5 border rounded-xl text-sm font-bold"><option value="Cash">Cash</option><option value="Leasing">Leasing</option><option value="Exchange">Exchange</option><option value="Cash + Exchange">Cash + Exchange</option><option value="Leasing + Exchange">Leasing + Exchange</option></select>
-                <div id="pastLeasingFields" class="hidden space-y-2"><input type="text" id="pastLeaseComp" placeholder="Leasing Company" class="w-full p-2.5 border rounded-xl text-sm font-bold"><input type="text" id="pastLeaseOfficer" placeholder="Officer" class="w-full p-2.5 border rounded-xl text-sm font-bold"></div>
-                <div id="pastExchangeFields" class="hidden space-y-2"><input type="text" id="pastExModel" placeholder="Exchange Vehicle" class="w-full p-2.5 border rounded-xl text-sm font-bold"></div>
-                <input type="date" id="pastSoldDate" class="w-full p-2.5 border rounded-xl text-sm font-bold" required>
-                <div class="flex justify-end gap-2 pt-3"><button type="button" onclick="closePastSaleModal()" class="px-4 py-2 bg-slate-100 font-bold rounded-xl text-xs">Cancel</button><button type="submit" class="px-4 py-2 bg-slate-900 text-white font-bold rounded-xl text-xs shadow-sm">Save</button></div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 mb-1">Make & Model</label>
+                    <input type="text" id="pastModel" placeholder="e.g. Toyota Axio" class="w-full p-2.5 bg-slate-50 border rounded-xl text-sm font-medium outline-none focus:ring-2 focus:ring-indigo-500" required>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 mb-1">Vehicle Color</label>
+                    <input type="text" id="pastColor" placeholder="e.g. White / Silver" class="w-full p-2.5 bg-slate-50 border rounded-xl text-sm font-medium outline-none focus:ring-2 focus:ring-indigo-500" required>
+                </div>
+                <div class="grid grid-cols-2 gap-2">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 mb-1">Chassis Number</label>
+                        <input type="text" id="pastChassis" placeholder="Chassis No" class="w-full p-2.5 bg-slate-50 border rounded-xl text-sm font-medium outline-none focus:ring-2 focus:ring-indigo-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 mb-1">Reg Number</label>
+                        <input type="text" id="pastRegNo" placeholder="e.g. CAB-1234" class="w-full p-2.5 bg-slate-50 border rounded-xl text-sm font-medium outline-none focus:ring-2 focus:ring-indigo-500">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 mb-1">Mileage / Notes</label>
+                    <input type="text" id="pastMileage" placeholder="e.g. 35,000 km" class="w-full p-2.5 bg-slate-50 border rounded-xl text-sm font-medium outline-none focus:ring-2 focus:ring-indigo-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 mb-1">Customer Name</label>
+                    <input type="text" id="pastCustName" placeholder="Enter Customer Name" class="w-full p-2.5 bg-slate-50 border rounded-xl text-sm font-medium outline-none focus:ring-2 focus:ring-indigo-500" required>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 mb-1">Customer Phone</label>
+                    <input type="text" id="pastCustPhone" placeholder="Enter Customer Phone" class="w-full p-2.5 bg-slate-50 border rounded-xl text-sm font-medium outline-none focus:ring-2 focus:ring-indigo-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 mb-1">Sales Representative</label>
+                    <select id="pastSalesRep" class="w-full p-2.5 bg-slate-50 border rounded-xl text-sm font-medium outline-none focus:ring-2 focus:ring-indigo-500" required>
+                        <option value="Thushan">Thushan</option>
+                        <option value="Aravinda">Aravinda</option>
+                        <option value="Nethwan">Nethwan</option>
+                        <option value="Prasanna">Prasanna</option>
+                        <option value="Sithum">Sithum</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 mb-1">Payment Method</label>
+                    <select id="pastPayMethod" onchange="togglePayFields(this.value, 'past')" class="w-full p-2.5 bg-slate-50 border rounded-xl text-sm font-medium outline-none focus:ring-2 focus:ring-indigo-500">
+                        <option value="Cash">Cash</option>
+                        <option value="Leasing">Leasing</option>
+                        <option value="Exchange">Exchange / Trade-In</option>
+                        <option value="Cash + Exchange">Cash + Exchange</option>
+                        <option value="Leasing + Exchange">Leasing + Exchange</option>
+                    </select>
+                </div>
+
+                <div id="pastLeasingFields" class="hidden space-y-2 border-l-2 border-indigo-500 pl-3 pt-1">
+                    <p class="text-[11px] font-bold text-indigo-600">Leasing Details</p>
+                    <input type="text" id="pastLeaseComp" placeholder="Leasing Company" class="w-full p-2.5 bg-slate-50 border rounded-xl text-sm font-medium">
+                    <input type="text" id="pastLeaseOfficer" placeholder="Branch / Officer Details" class="w-full p-2.5 bg-slate-50 border rounded-xl text-sm font-medium">
+                </div>
+
+                <div id="pastExchangeFields" class="hidden space-y-2 border-l-2 border-amber-500 pl-3 pt-1">
+                    <p class="text-[11px] font-bold text-amber-600">Exchange Vehicle Info</p>
+                    <input type="text" id="pastExModel" placeholder="Exchange Vehicle Model & Reg No" class="w-full p-2.5 bg-slate-50 border rounded-xl text-sm font-medium">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 mb-1">Sold Date</label>
+                    <input type="date" id="pastSoldDate" class="w-full p-2.5 bg-slate-50 border rounded-xl text-sm font-medium outline-none focus:ring-2 focus:ring-indigo-500" required>
+                </div>
+
+                <div class="flex justify-end gap-2 pt-3 border-t">
+                    <button type="button" onclick="closePastSaleModal()" class="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl text-xs">Cancel</button>
+                    <button type="submit" id="btnPastSubmit" class="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-xs shadow-sm">Save Past Sale</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL 7: EDIT FULL SOLD RECORD -->
+    <div id="editSoldModal" class="fixed inset-0 bg-slate-950/60 backdrop-blur-sm flex justify-center items-center hidden z-50 p-4">
+        <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-xl border border-slate-100 space-y-4 max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center border-b pb-3">
+                <h3 class="font-extrabold text-slate-900 text-base flex items-center gap-2">
+                    <i class="fa-solid fa-pen-to-square text-indigo-600"></i> Edit Sold Vehicle Record
+                </h3>
+                <button onclick="closeEditSoldModal()" class="text-slate-400 hover:text-slate-600 p-1"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            <form id="editSoldForm" class="space-y-3">
+                <input type="hidden" id="editSoldId">
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 mb-1">Make & Model</label>
+                    <input type="text" id="editModel" class="w-full p-2.5 bg-slate-50 border rounded-xl text-sm font-medium outline-none focus:ring-2 focus:ring-indigo-500" required>
+                </div>
+                <div class="grid grid-cols-2 gap-2">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 mb-1">Color</label>
+                        <input type="text" id="editColor" class="w-full p-2.5 bg-slate-50 border rounded-xl text-sm font-medium outline-none focus:ring-2 focus:ring-indigo-500" required>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 mb-1">Year</label>
+                        <input type="number" id="editYear" class="w-full p-2.5 bg-slate-50 border rounded-xl text-sm font-medium outline-none focus:ring-2 focus:ring-indigo-500">
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-2">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 mb-1">Chassis Number</label>
+                        <input type="text" id="editChassis" class="w-full p-2.5 bg-slate-50 border rounded-xl text-sm font-medium outline-none focus:ring-2 focus:ring-indigo-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 mb-1">Reg Number</label>
+                        <input type="text" id="editRegNo" class="w-full p-2.5 bg-slate-50 border rounded-xl text-sm font-medium outline-none focus:ring-2 focus:ring-indigo-500">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 mb-1">Mileage / Notes</label>
+                    <input type="text" id="editMileage" class="w-full p-2.5 bg-slate-50 border rounded-xl text-sm font-medium outline-none focus:ring-2 focus:ring-indigo-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 mb-1">Customer Name</label>
+                    <input type="text" id="editCustName" class="w-full p-2.5 bg-slate-50 border rounded-xl text-sm font-medium outline-none focus:ring-2 focus:ring-indigo-500" required>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 mb-1">Customer Phone</label>
+                    <input type="text" id="editCustPhone" class="w-full p-2.5 bg-slate-50 border rounded-xl text-sm font-medium outline-none focus:ring-2 focus:ring-indigo-500">
+                </div>
+                <div class="grid grid-cols-2 gap-2">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 mb-1">Sales Rep</label>
+                        <select id="editSalesRep" class="w-full p-2.5 bg-slate-50 border rounded-xl text-sm font-medium outline-none focus:ring-2 focus:ring-indigo-500" required>
+                            <option value="Thushan">Thushan</option>
+                            <option value="Aravinda">Aravinda</option>
+                            <option value="Nethwan">Nethwan</option>
+                            <option value="Prasanna">Prasanna</option>
+                            <option value="Sithum">Sithum</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 mb-1">Payment Method</label>
+                        <select id="editPayMethod" onchange="togglePayFields(this.value, 'edit')" class="w-full p-2.5 bg-slate-50 border rounded-xl text-sm font-medium outline-none focus:ring-2 focus:ring-indigo-500">
+                            <option value="Cash">Cash</option>
+                            <option value="Leasing">Leasing</option>
+                            <option value="Exchange">Exchange / Trade-In</option>
+                            <option value="Cash + Exchange">Cash + Exchange</option>
+                            <option value="Leasing + Exchange">Leasing + Exchange</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div id="editLeasingFields" class="hidden space-y-2 border-l-2 border-indigo-500 pl-3 pt-1">
+                    <p class="text-[11px] font-bold text-indigo-600">Leasing Details</p>
+                    <input type="text" id="editLeaseComp" placeholder="Leasing Company" class="w-full p-2.5 bg-slate-50 border rounded-xl text-sm font-medium">
+                    <input type="text" id="editLeaseOfficer" placeholder="Branch / Officer Details" class="w-full p-2.5 bg-slate-50 border rounded-xl text-sm font-medium">
+                </div>
+
+                <div id="editExchangeFields" class="hidden space-y-2 border-l-2 border-amber-500 pl-3 pt-1">
+                    <p class="text-[11px] font-bold text-amber-600">Exchange Vehicle Info</p>
+                    <input type="text" id="editExModel" placeholder="Exchange Vehicle Model & Reg No" class="w-full p-2.5 bg-slate-50 border rounded-xl text-sm font-medium">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 mb-1">Sold Date</label>
+                    <input type="date" id="editSoldDate" class="w-full p-2.5 bg-slate-50 border rounded-xl text-sm font-medium outline-none focus:ring-2 focus:ring-indigo-500" required>
+                </div>
+
+                <div class="flex justify-end gap-2 pt-3 border-t">
+                    <button type="button" onclick="closeEditSoldModal()" class="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl text-xs">Cancel</button>
+                    <button type="submit" id="btnEditSubmit" class="px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl text-xs shadow-sm">Save Changes</button>
+                </div>
             </form>
         </div>
     </div>
 
     <!-- JavaScript Application Logic -->
     <script>
-        // LOGIN LOGIC
-        function checkPin() {
-            const pin = document.getElementById('adminPin').value;
-            if(pin === '4242') {
-                document.getElementById('loginScreen').style.opacity = '0';
-                setTimeout(() => {
-                    document.getElementById('loginScreen').classList.add('hidden');
-                }, 300);
-            } else {
-                const err = document.getElementById('pinError');
-                err.classList.remove('hidden');
-                setTimeout(() => err.classList.add('hidden'), 2000);
-            }
-        }
-        
-        document.getElementById('adminPin').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') checkPin();
-        });
-
         // FIREBASE CONFIGURATION
         const firebaseConfig = {
             apiKey: "AIzaSyCxIMvkvAjF4kp9yP74keIJErpFOH2LTRM",
@@ -484,11 +651,13 @@
             appId: "1:878915759817:web:988fbfd146ccdcedb6718"
         };
 
+        // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
 
         let vehicles = [];
 
+        // Realtime Database Listener
         db.collection("vehicles").onSnapshot((snapshot) => {
             vehicles = [];
             snapshot.forEach((doc) => {
@@ -496,61 +665,69 @@
             });
             renderAll();
         }, (error) => {
-            alert("Firebase Error: Check Internet or Permissions!");
+            alert("Firebase Error: Check Firestore Permission Rules!");
+            console.error(error);
         });
 
-        // Universal Getter
+        // Universal Property Getter Logic
         function getVal(v, keys, defaultVal = '-') {
             if (!v) return defaultVal;
             for (let k of keys) {
-                if (v[k] !== undefined && v[k] !== null && v[k] !== '') return v[k];
+                if (v[k] !== undefined && v[k] !== null && v[k] !== '') {
+                    return v[k];
+                }
             }
             return defaultVal;
         }
 
-        function getModel(v) { return getVal(v, ['vModel', 'model', 'Model', 'makeModel'], 'Unknown Model'); }
+        function getModel(v) { return getVal(v, ['vModel', 'model', 'Model', 'makeModel', 'name'], 'Unknown Model'); }
         function getColor(v) { return getVal(v, ['vColor', 'color', 'Color'], '-'); }
         function getType(v) { return getVal(v, ['vType', 'type', 'Type', 'regType'], 'Unregistered'); }
         function getYear(v) { return getVal(v, ['vYear', 'year', 'Year'], '-'); }
-        function getChassis(v) { return getVal(v, ['vChassis', 'chassis', 'Chassis'], '-'); }
-        function getRegNo(v) { return getVal(v, ['vRegNo', 'regNo', 'RegNo'], '-'); }
-        function getMileage(v) { return getVal(v, ['vMileage', 'mileage'], '-'); }
-        function getCustName(v) { return getVal(v, ['custName', 'customerName'], '-'); }
-        function getCustPhone(v) { return getVal(v, ['custPhone', 'customerPhone'], '-'); }
-        function getSalesRep(v) { return getVal(v, ['salesRep', 'rep'], 'N/A'); }
-        function getPayMethod(v) { return getVal(v, ['payMethod', 'paymentMethod'], 'Cash'); }
-        function getSoldDate(v) { return getVal(v, ['soldDate', 'date'], '-'); }
-        function getLeaseComp(v) { return getVal(v, ['leaseComp', 'leaseCompany'], ''); }
-        function getLeaseOfficer(v) { return getVal(v, ['leaseOfficer', 'officer'], ''); }
-        function getExModel(v) { return getVal(v, ['exModel', 'exchangeModel'], ''); }
+        function getChassis(v) { return getVal(v, ['vChassis', 'chassis', 'Chassis', 'chassisNo'], '-'); }
+        function getRegNo(v) { return getVal(v, ['vRegNo', 'regNo', 'RegNo', 'regNumber', 'registrationNo'], '-'); }
+        function getMileage(v) { return getVal(v, ['vMileage', 'mileage', 'Mileage', 'notes'], '-'); }
+        function getCustName(v) { return getVal(v, ['custName', 'customerName', 'customer', 'cust_name', 'name'], '-'); }
+        function getCustPhone(v) { return getVal(v, ['custPhone', 'customerPhone', 'phone', 'mobile'], '-'); }
+        function getSalesRep(v) { return getVal(v, ['salesRep', 'rep', 'sales_rep', 'seller'], '-'); }
+        function getPayMethod(v) { return getVal(v, ['payMethod', 'paymentMethod', 'payment', 'pay_method'], 'Cash'); }
+        function getSoldDate(v) { return getVal(v, ['soldDate', 'date', 'sold_date', 'saleDate'], '-'); }
+        function getLeaseComp(v) { return getVal(v, ['leaseComp', 'leaseCompany', 'leasingCompany'], ''); }
+        function getLeaseOfficer(v) { return getVal(v, ['leaseOfficer', 'officer', 'leasingOfficer'], ''); }
+        function getExModel(v) { return getVal(v, ['exModel', 'exchangeModel', 'exchangeCar'], ''); }
         function getStatus(v) { return getVal(v, ['status', 'Status'], 'Available'); }
 
-        // Form Logic
-        function toggleRegTypeFields() {
+        // Dynamic Registration Field Validation Toggle
+        function toggleRegValidation() {
             const vType = document.getElementById('vType').value;
+            const lblRegNo = document.getElementById('lblRegNo');
+            const vRegNo = document.getElementById('vRegNo');
             if (vType === 'Registered') {
-                document.getElementById('divChassis').classList.remove('hidden');
-                document.getElementById('divRegNo').classList.remove('hidden');
-                document.getElementById('vChassis').required = false;
-                document.getElementById('vRegNo').required = true;
-                document.getElementById('lblChassis').innerHTML = 'Chassis Number (Optional)';
+                lblRegNo.innerHTML = 'Reg Number <span class="text-rose-500">*</span>';
+                vRegNo.required = true;
             } else {
-                document.getElementById('divChassis').classList.remove('hidden');
-                document.getElementById('divRegNo').classList.add('hidden');
-                document.getElementById('vChassis').required = true;
-                document.getElementById('vRegNo').required = false;
-                document.getElementById('vRegNo').value = '';
-                document.getElementById('lblChassis').innerHTML = 'Chassis Number <span class="text-rose-500">*</span>';
+                lblRegNo.innerHTML = 'Reg Number (Optional)';
+                vRegNo.required = false;
             }
         }
 
+        // Toggle Payment Specific Sub-Fields
         function togglePayFields(val, prefix) {
             const leaseDiv = document.getElementById(`${prefix}LeasingFields`);
             const exDiv = document.getElementById(`${prefix}ExchangeFields`);
-            val.includes('Leasing') ? leaseDiv.classList.remove('hidden') : leaseDiv.classList.add('hidden');
-            val.includes('Exchange') ? exDiv.classList.remove('hidden') : exDiv.classList.add('hidden');
+
+            if(leaseDiv) {
+                if (val.includes('Leasing')) { leaseDiv.classList.remove('hidden'); }
+                else { leaseDiv.classList.add('hidden'); }
+            }
+
+            if(exDiv) {
+                if (val.includes('Exchange')) { exDiv.classList.remove('hidden'); }
+                else { exDiv.classList.add('hidden'); }
+            }
         }
 
+        // Tab Switching Logic
         function switchTab(tab) {
             ['available', 'advanced', 'sold'].forEach(t => {
                 document.getElementById(`section-${t}`).classList.add('hidden');
@@ -560,410 +737,721 @@
             document.getElementById(`tab-${tab}`).classList.add('active-tab');
         }
 
+        // Add Vehicle Form Submit Handler with Duplicate Check
         document.getElementById('addVehicleForm').addEventListener('submit', (e) => {
             e.preventDefault();
             const btn = document.getElementById('btnAddSubmit');
+
+            const chassisVal = document.getElementById('vChassis').value.trim();
+            const regNoVal = document.getElementById('vRegNo').value.trim();
+
+            const isDuplicate = vehicles.some(v => {
+                const existingChassis = getChassis(v).trim();
+                const existingReg = getRegNo(v).trim();
+
+                if (chassisVal && chassisVal !== '-' && existingChassis.toLowerCase() === chassisVal.toLowerCase()) {
+                    return true;
+                }
+                if (regNoVal && regNoVal !== '-' && existingReg.toLowerCase() === regNoVal.toLowerCase()) {
+                    return true;
+                }
+                return false;
+            });
+
+            if (isDuplicate) {
+                alert("⚠️ Duplicate Alert: මෙම Chassis Number හෝ Reg Number එක සහිත Vehicle එකක් දැනටමත් System එකේ ඇත!");
+                return;
+            }
+
             btn.disabled = true;
-            
-            db.collection("vehicles").add({
+            btn.innerText = "Adding...";
+
+            const newVehicle = {
                 vType: document.getElementById('vType').value,
                 vModel: document.getElementById('vModel').value,
                 vColor: document.getElementById('vColor').value,
                 vYear: document.getElementById('vYear').value,
-                vChassis: document.getElementById('vChassis').value || '-',
-                vRegNo: document.getElementById('vRegNo').value || '-',
+                vChassis: chassisVal,
+                vRegNo: regNoVal || '-',
                 vMileage: document.getElementById('vMileage').value || '-',
                 status: 'Available',
                 createdAt: new Date().toISOString()
-            }).then(() => {
+            };
+
+            db.collection("vehicles").add(newVehicle).then(() => {
                 document.getElementById('addVehicleForm').reset();
-                toggleRegTypeFields();
-            }).finally(() => btn.disabled = false);
+                toggleRegValidation();
+            }).catch(err => alert("Error: " + err.message))
+            .finally(() => {
+                btn.disabled = false;
+                btn.innerHTML = `<i class="fa-solid fa-plus"></i> Add Vehicle to Stock`;
+            });
         });
 
-        // RENDER LOGIC (WITH SEARCH & MOBILE CARDS)
+        // Render Functions
         function renderAll() {
-            let available = vehicles.filter(v => getStatus(v) === 'Available');
-            let advanced = vehicles.filter(v => getStatus(v) === 'Advanced');
-            
-            const searchAv = document.getElementById('searchAvailable')?.value.toLowerCase() || '';
-            if(searchAv) {
-                available = available.filter(v => getModel(v).toLowerCase().includes(searchAv) || getColor(v).toLowerCase().includes(searchAv) || getChassis(v).toLowerCase().includes(searchAv) || getRegNo(v).toLowerCase().includes(searchAv));
-            }
-
-            const searchAdv = document.getElementById('searchAdvanced')?.value.toLowerCase() || '';
-            if(searchAdv) {
-                advanced = advanced.filter(v => getModel(v).toLowerCase().includes(searchAdv) || getCustName(v).toLowerCase().includes(searchAdv));
-            }
+            const available = vehicles.filter(v => getStatus(v) === 'Available');
+            const advanced = vehicles.filter(v => getStatus(v) === 'Advanced');
+            const sold = vehicles.filter(v => getStatus(v) === 'Sold');
 
             document.getElementById('count-available').innerText = available.length;
             document.getElementById('count-advanced').innerText = advanced.length;
-            
-            renderAvailable(available);
-            renderAdvanced(advanced);
-            renderSold(); 
+            document.getElementById('count-sold').innerText = sold.length;
+
+            renderAvailable();
+            renderAdvanced();
+            renderSold();
         }
 
-        function renderAvailable(list) {
+        function renderAvailable() {
+            let list = vehicles.filter(v => getStatus(v) === 'Available');
+            const query = (document.getElementById('searchAvailable')?.value || '').toLowerCase();
+
+            if (query) {
+                list = list.filter(v => 
+                    getModel(v).toLowerCase().includes(query) ||
+                    getColor(v).toLowerCase().includes(query) ||
+                    getChassis(v).toLowerCase().includes(query) ||
+                    getRegNo(v).toLowerCase().includes(query) ||
+                    getType(v).toLowerCase().includes(query)
+                );
+            }
+
             const tbl = document.getElementById('tbl-available');
-            const cards = document.getElementById('cards-available'); 
+            const cards = document.getElementById('cards-available');
             tbl.innerHTML = '';
             cards.innerHTML = '';
 
-            if(list.length === 0) { 
-                tbl.innerHTML = `<tr><td colspan="7" class="text-center p-4">No data.</td></tr>`; 
-                cards.innerHTML = `<div class="text-center p-4 text-slate-500 font-bold bg-white rounded-2xl border">No data found.</div>`;
-                return; 
+            if(list.length === 0) {
+                tbl.innerHTML = `<tr><td colspan="7" class="text-center p-4 text-slate-400">No available vehicles found.</td></tr>`;
+                cards.innerHTML = `<div class="text-center p-4 text-slate-400 bg-white rounded-xl">No available vehicles.</div>`;
+                return;
             }
 
             list.forEach(v => {
-                // Desktop Table
+                const type = getType(v);
+                const model = getModel(v);
+                const color = getColor(v);
+                const year = getYear(v);
+                const chassis = getChassis(v);
+                const regNo = getRegNo(v);
+
                 tbl.innerHTML += `
-                    <tr class="hover:bg-slate-50 border-b border-slate-100">
-                        <td class="p-4"><span class="px-2 py-1 rounded-md text-xs font-bold ${getType(v)==='Registered'?'bg-blue-100 text-blue-700':'bg-slate-200 text-slate-700'}">${getType(v)}</span></td>
-                        <td class="p-4 font-bold text-slate-900">${getModel(v)}</td>
-                        <td class="p-4 font-semibold text-slate-600">${getColor(v)}</td>
-                        <td class="p-4 font-bold text-slate-600">${getYear(v)}</td>
-                        <td class="p-4 font-mono text-xs">${getChassis(v)}</td>
-                        <td class="p-4 font-mono text-xs">${getRegNo(v)}</td>
-                        <td class="p-4 text-right flex justify-end gap-2">
-                            <button onclick="openAdvanceModal('${v.id}')" class="bg-amber-100 text-amber-700 hover:bg-amber-500 hover:text-white text-xs px-3 py-1.5 rounded-lg font-bold transition">Advance</button>
-                            <button onclick="openUniversalEdit('${v.id}')" class="text-indigo-500 hover:bg-indigo-50 p-2 rounded-lg transition"><i class="fa-solid fa-pen"></i></button>
-                            <button onclick="deleteVehicle('${v.id}')" class="text-rose-500 hover:bg-rose-50 p-2 rounded-lg transition"><i class="fa-solid fa-trash"></i></button>
+                    <tr onclick="openAvailableDetailModal('${v.id}')" class="hover:bg-slate-50/80 transition cursor-pointer">
+                        <td class="p-4"><span class="px-2.5 py-1 rounded-full text-xs font-semibold ${type==='Registered'?'bg-blue-100 text-blue-700':'bg-amber-100 text-amber-700'}">${type}</span></td>
+                        <td class="p-4 font-bold text-slate-900">${model}</td>
+                        <td class="p-4">${color}</td>
+                        <td class="p-4">${year}</td>
+                        <td class="p-4 font-mono text-xs">${chassis}</td>
+                        <td class="p-4 font-mono text-xs">${regNo}</td>
+                        <td class="p-4 text-right flex justify-end items-center gap-1.5" onclick="event.stopPropagation()">
+                            <button onclick="openEditAvailableModal('${v.id}')" title="Edit Vehicle" class="text-indigo-600 hover:text-indigo-800 p-1.5"><i class="fa-solid fa-pen-to-square"></i></button>
+                            <button onclick="openAdvanceModal('${v.id}')" class="bg-amber-500 hover:bg-amber-600 text-white text-xs px-3 py-1.5 rounded-lg font-bold">Advance</button>
+                            <button onclick="deleteVehicle('${v.id}')" title="Delete" class="text-rose-500 hover:text-rose-700 p-1.5"><i class="fa-solid fa-trash"></i></button>
                         </td>
-                    </tr>`;
-                
-                // Mobile Cards
+                    </tr>
+                `;
+
                 cards.innerHTML += `
-                    <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm relative">
-                        <div class="flex justify-between items-start mb-2">
-                            <div>
-                                <div class="font-bold text-slate-900 text-base">${getModel(v)}</div>
-                                <div class="text-xs font-semibold text-slate-500">${getColor(v)} • YOM: ${getYear(v)}</div>
+                    <div onclick="openAvailableDetailModal('${v.id}')" class="bg-white p-4 rounded-xl border border-slate-200/80 shadow-sm space-y-2 cursor-pointer">
+                        <div class="flex justify-between items-start">
+                            <h4 class="font-bold text-slate-900">${model}</h4>
+                            <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${type==='Registered'?'bg-blue-100 text-blue-700':'bg-amber-100 text-amber-700'}">${type}</span>
+                        </div>
+                        <p class="text-xs text-slate-500">Color: ${color} | Year: ${year}</p>
+                        <p class="text-xs font-mono text-slate-600">Chassis: ${chassis}</p>
+                        <div class="pt-2 flex justify-between items-center" onclick="event.stopPropagation()">
+                            <div class="flex items-center gap-2">
+                                <button onclick="openAdvanceModal('${v.id}')" class="bg-amber-500 text-white text-xs px-3 py-1.5 rounded-lg font-bold">Advance</button>
+                                <button onclick="openEditAvailableModal('${v.id}')" class="text-indigo-600 p-1"><i class="fa-solid fa-pen-to-square"></i></button>
                             </div>
-                            <span class="px-2 py-1 rounded-md text-[10px] font-bold ${getType(v)==='Registered'?'bg-blue-100 text-blue-700':'bg-slate-200 text-slate-700'}">${getType(v)}</span>
+                            <button onclick="deleteVehicle('${v.id}')" class="text-rose-500 p-1"><i class="fa-solid fa-trash"></i></button>
                         </div>
-                        <div class="text-xs font-mono text-slate-600 mb-3 font-bold bg-slate-50 p-2 rounded-lg">
-                            ${getType(v)==='Registered' ? `Reg No: ${getRegNo(v)}` : `Chassis: ${getChassis(v)}`}
-                        </div>
-                        <div class="flex justify-end gap-2 pt-2 border-t border-slate-100">
-                            <button onclick="openAdvanceModal('${v.id}')" class="bg-amber-100 text-amber-700 hover:bg-amber-500 hover:text-white text-xs px-3 py-2 rounded-lg font-bold transition flex-1">Advance</button>
-                            <button onclick="openUniversalEdit('${v.id}')" class="bg-indigo-50 text-indigo-600 px-3 py-2 rounded-lg text-sm font-bold transition"><i class="fa-solid fa-pen"></i></button>
-                            <button onclick="deleteVehicle('${v.id}')" class="bg-rose-50 text-rose-600 px-3 py-2 rounded-lg text-sm font-bold transition"><i class="fa-solid fa-trash"></i></button>
-                        </div>
-                    </div>`;
+                    </div>
+                `;
             });
         }
 
-        function renderAdvanced(list) {
+        function renderAdvanced() {
+            let list = vehicles.filter(v => getStatus(v) === 'Advanced');
+            const query = (document.getElementById('searchAdvanced')?.value || '').toLowerCase();
+
+            if (query) {
+                list = list.filter(v => 
+                    getModel(v).toLowerCase().includes(query) ||
+                    getColor(v).toLowerCase().includes(query) ||
+                    getCustName(v).toLowerCase().includes(query) ||
+                    getSalesRep(v).toLowerCase().includes(query) ||
+                    getPayMethod(v).toLowerCase().includes(query) ||
+                    getChassis(v).toLowerCase().includes(query)
+                );
+            }
+
             const tbl = document.getElementById('tbl-advanced');
-            const cards = document.getElementById('cards-advanced'); 
+            const cards = document.getElementById('cards-advanced');
             tbl.innerHTML = '';
             cards.innerHTML = '';
 
-            if(list.length === 0) { 
-                tbl.innerHTML = `<tr><td colspan="5" class="text-center p-4">No data.</td></tr>`;
-                cards.innerHTML = `<div class="text-center p-4 text-slate-500 font-bold bg-white rounded-2xl border">No data found.</div>`;
-                return; 
+            if(list.length === 0) {
+                tbl.innerHTML = `<tr><td colspan="6" class="text-center p-4 text-slate-400">No reserved/advanced vehicles found.</td></tr>`;
+                cards.innerHTML = `<div class="text-center p-4 text-slate-400 bg-white rounded-xl">No reserved vehicles.</div>`;
+                return;
             }
 
             list.forEach(v => {
-                // Desktop Table
+                const model = getModel(v);
+                const color = getColor(v);
+                const custName = getCustName(v);
+                const custPhone = getCustPhone(v);
+                const salesRep = getSalesRep(v);
+                const payMethod = getPayMethod(v);
+                const leaseComp = getLeaseComp(v);
+                const leaseOfficer = getLeaseOfficer(v);
+                const exModel = getExModel(v);
+
+                let extraDetails = '-';
+                if(payMethod.includes('Leasing') && leaseComp) {
+                    extraDetails = `<b>Leasing:</b> ${leaseComp} (${leaseOfficer || '-'})`;
+                }
+                if(payMethod.includes('Exchange') && exModel) {
+                    extraDetails = extraDetails === '-' ? `<b>Exchange Car:</b> ${exModel}` : `${extraDetails} | <b>Ex:</b> ${exModel}`;
+                }
+
                 tbl.innerHTML += `
-                    <tr class="hover:bg-slate-50 border-b border-slate-100">
-                        <td class="p-4"><div class="font-bold text-slate-900">${getModel(v)}</div><div class="text-xs font-semibold text-slate-500">${getColor(v)}</div></td>
-                        <td class="p-4"><div class="font-bold text-slate-800">${getCustName(v)}</div><div class="text-xs font-semibold text-slate-500">${getCustPhone(v)}</div></td>
-                        <td class="p-4 font-bold text-indigo-600">${getSalesRep(v)}</td>
-                        <td class="p-4"><span class="px-2 py-1 rounded-md text-xs font-bold bg-amber-100 text-amber-800">${getPayMethod(v)}</span></td>
-                        <td class="p-4 text-right flex justify-end gap-1">
-                            <button onclick="markAsSold('${v.id}')" class="bg-emerald-100 text-emerald-700 hover:bg-emerald-600 hover:text-white text-xs px-3 py-1.5 rounded-lg font-bold transition">Sold</button>
-                            <button onclick="openUniversalEdit('${v.id}')" class="text-indigo-500 hover:bg-indigo-50 p-2 rounded-lg transition"><i class="fa-solid fa-pen"></i></button>
-                            <button onclick="cancelAdvance('${v.id}')" class="text-slate-500 hover:bg-slate-100 p-2 rounded-lg transition"><i class="fa-solid fa-xmark"></i></button>
+                    <tr class="hover:bg-slate-50/80 transition">
+                        <td class="p-4">
+                            <div class="font-bold text-slate-900">${model}</div>
+                            <div class="text-xs text-slate-500">${color}</div>
                         </td>
-                    </tr>`;
-                
-                // Mobile Cards
+                        <td class="p-4">
+                            <div class="font-semibold text-slate-800">${custName}</div>
+                            <div class="text-xs text-slate-500">${custPhone}</div>
+                        </td>
+                        <td class="p-4 font-semibold text-indigo-600">${salesRep}</td>
+                        <td class="p-4"><span class="px-2.5 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-800">${payMethod}</span></td>
+                        <td class="p-4 text-xs">${extraDetails}</td>
+                        <td class="p-4 text-right flex justify-end items-center gap-1.5">
+                            <button onclick="openEditAdvancedModal('${v.id}')" title="Edit Advanced Info" class="text-indigo-600 hover:text-indigo-800 p-1.5"><i class="fa-solid fa-pen-to-square"></i></button>
+                            <button onclick="markAsSold('${v.id}')" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs px-3 py-1.5 rounded-lg font-bold">Complete Sale</button>
+                            <button onclick="cancelAdvance('${v.id}')" class="bg-slate-200 hover:bg-slate-300 text-slate-700 text-xs px-2.5 py-1.5 rounded-lg font-semibold">Cancel</button>
+                        </td>
+                    </tr>
+                `;
+
                 cards.innerHTML += `
-                    <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
-                        <div class="flex justify-between items-start mb-2">
-                            <div>
-                                <div class="font-bold text-slate-900 text-base">${getModel(v)}</div>
-                                <div class="text-xs font-bold text-indigo-600 mt-1"><i class="fa-solid fa-user"></i> ${getCustName(v)} <span class="text-slate-400">(${getCustPhone(v)})</span></div>
+                    <div class="bg-white p-4 rounded-xl border border-slate-200/80 shadow-sm space-y-2">
+                        <h4 class="font-bold text-slate-900">${model} (${color})</h4>
+                        <p class="text-xs text-slate-600">Customer: <b>${custName}</b> (${custPhone})</p>
+                        <p class="text-xs text-slate-500">Rep: ${salesRep} | Pay: ${payMethod}</p>
+                        <div class="pt-2 flex justify-between items-center">
+                            <button onclick="openEditAdvancedModal('${v.id}')" class="text-indigo-600 p-1"><i class="fa-solid fa-pen-to-square"></i> Edit</button>
+                            <div class="flex gap-1.5">
+                                <button onclick="markAsSold('${v.id}')" class="bg-emerald-600 text-white text-xs px-3 py-1.5 rounded-lg font-bold">Complete Sale</button>
+                                <button onclick="cancelAdvance('${v.id}')" class="bg-slate-200 text-slate-700 text-xs px-2.5 py-1.5 rounded-lg font-semibold">Cancel</button>
                             </div>
                         </div>
-                        <div class="flex justify-between items-center bg-slate-50 p-2 rounded-lg mb-3">
-                            <div class="text-xs font-bold text-slate-600">Rep: ${getSalesRep(v)}</div>
-                            <span class="px-2 py-1 rounded-md text-[10px] font-bold bg-amber-100 text-amber-800">${getPayMethod(v)}</span>
-                        </div>
-                        <div class="flex justify-end gap-2 border-t border-slate-100 pt-3">
-                            <button onclick="markAsSold('${v.id}')" class="bg-emerald-100 text-emerald-700 hover:bg-emerald-600 hover:text-white text-xs px-3 py-2 rounded-lg font-bold transition flex-1">Mark as Sold</button>
-                            <button onclick="openUniversalEdit('${v.id}')" class="bg-indigo-50 text-indigo-600 px-3 py-2 rounded-lg text-sm font-bold transition"><i class="fa-solid fa-pen"></i></button>
-                            <button onclick="cancelAdvance('${v.id}')" class="bg-slate-100 text-slate-600 px-3 py-2 rounded-lg text-sm font-bold transition"><i class="fa-solid fa-xmark"></i></button>
-                        </div>
-                    </div>`;
+                    </div>
+                `;
             });
         }
 
         function renderSold() {
-            const query = document.getElementById('searchSold').value.toLowerCase();
-            const rep = document.getElementById('filterRep').value;
-            const month = document.getElementById('filterMonth').value;
+            const query = (document.getElementById('searchSold')?.value || '').toLowerCase();
+            const rep = document.getElementById('filterRep')?.value || 'ALL';
+            const month = document.getElementById('filterMonth')?.value || '';
 
             let soldList = vehicles.filter(v => getStatus(v) === 'Sold');
-            soldList.sort((a, b) => (getSoldDate(b) === '-' ? '' : getSoldDate(b)).localeCompare(getSoldDate(a) === '-' ? '' : getSoldDate(a)));
 
-            if (rep !== 'ALL') soldList = soldList.filter(v => getSalesRep(v) === rep);
-            if (month) soldList = soldList.filter(v => getSoldDate(v) && getSoldDate(v).startsWith(month));
-            if (query) soldList = soldList.filter(v => getModel(v).toLowerCase().includes(query) || getCustName(v).toLowerCase().includes(query));
+            soldList.sort((a, b) => {
+                const dateA = getSoldDate(a);
+                const dateB = getSoldDate(b);
+                const safeA = dateA === '-' ? '' : dateA;
+                const safeB = dateB === '-' ? '' : dateB;
+                return safeB.localeCompare(safeA); 
+            });
 
-            document.getElementById('count-sold').innerText = soldList.length;
-            document.getElementById('soldCountBadge').innerText = `${soldList.length} Sold`;
+            if (rep !== 'ALL') {
+                soldList = soldList.filter(v => getSalesRep(v) === rep);
+            }
+            if (month) {
+                soldList = soldList.filter(v => {
+                    const d = getSoldDate(v);
+                    return d && d.startsWith(month);
+                });
+            }
+            if (query) {
+                soldList = soldList.filter(v => 
+                    getModel(v).toLowerCase().includes(query) ||
+                    getColor(v).toLowerCase().includes(query) ||
+                    getChassis(v).toLowerCase().includes(query) ||
+                    getRegNo(v).toLowerCase().includes(query) ||
+                    getCustName(v).toLowerCase().includes(query)
+                );
+            }
 
             const tbl = document.getElementById('tbl-sold');
-            const cards = document.getElementById('cards-sold'); 
+            const cards = document.getElementById('cards-sold');
             tbl.innerHTML = '';
             cards.innerHTML = '';
 
-            if(soldList.length === 0) { 
-                tbl.innerHTML = `<tr><td colspan="7" class="text-center p-4">No data.</td></tr>`;
-                cards.innerHTML = `<div class="text-center p-4 text-slate-500 font-bold bg-white rounded-2xl border">No data found.</div>`;
-                return; 
+            if(soldList.length === 0) {
+                tbl.innerHTML = `<tr><td colspan="6" class="text-center p-4 text-slate-400">No sold records found.</td></tr>`;
+                cards.innerHTML = `<div class="text-center p-4 text-slate-400 bg-white rounded-xl">No sold records found.</div>`;
+                return;
             }
 
             soldList.forEach(v => {
-                // Desktop Table
+                const soldDate = getSoldDate(v);
+                const model = getModel(v);
+                const color = getColor(v);
+                const custName = getCustName(v);
+                const salesRep = getSalesRep(v);
+                const payMethod = getPayMethod(v);
+
                 tbl.innerHTML += `
-                    <tr class="hover:bg-slate-50 border-b border-slate-100">
-                        <td class="p-4 font-mono text-xs font-bold">${getSoldDate(v)}</td>
-                        <td class="p-4 font-bold text-slate-900">${getModel(v)} <span class="text-slate-400 font-semibold text-xs">(${getColor(v)})</span></td>
-                        <td class="p-4 font-mono text-xs font-bold text-slate-600">${getRegNo(v) !== '-' ? getRegNo(v) : getChassis(v)}</td>
-                        <td class="p-4 font-bold text-slate-700">${getCustName(v)}</td>
-                        <td class="p-4 text-indigo-600 font-bold">${getSalesRep(v)}</td>
-                        <td class="p-4"><span class="px-2 py-1 rounded-md text-xs font-bold bg-emerald-100 text-emerald-800">${getPayMethod(v)}</span></td>
-                        <td class="p-4 text-right flex justify-end gap-1">
-                            <button onclick="openUniversalEdit('${v.id}')" class="text-indigo-500 hover:bg-indigo-50 p-2 rounded-lg transition"><i class="fa-solid fa-pen"></i></button>
-                            <button onclick="deleteVehicle('${v.id}')" class="text-rose-500 hover:bg-rose-50 p-2 rounded-lg transition"><i class="fa-solid fa-trash"></i></button>
+                    <tr onclick="openSoldDetailModal('${v.id}')" class="hover:bg-slate-50/80 transition cursor-pointer">
+                        <td class="p-4 font-mono text-xs font-semibold">${soldDate}</td>
+                        <td class="p-4 font-bold text-slate-900">${model} <span class="text-slate-400 font-normal text-xs">(${color})</span></td>
+                        <td class="p-4 font-semibold text-slate-700">${custName}</td>
+                        <td class="p-4 text-indigo-600 font-semibold">${salesRep}</td>
+                        <td class="p-4"><span class="px-2 py-0.5 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800">${payMethod}</span></td>
+                        <td class="p-4 text-right" onclick="event.stopPropagation()">
+                            <button onclick="openEditSoldModal('${v.id}')" class="text-indigo-600 hover:text-indigo-800 p-1 mr-1"><i class="fa-solid fa-pen-to-square"></i></button>
+                            <button onclick="deleteVehicle('${v.id}')" class="text-rose-500 hover:text-rose-700 p-1"><i class="fa-solid fa-trash"></i></button>
                         </td>
-                    </tr>`;
-                
-                // Mobile Cards
+                    </tr>
+                `;
+
                 cards.innerHTML += `
-                    <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm relative">
-                        <div class="flex justify-between items-start mb-1">
-                            <div class="font-bold text-slate-900 text-base">${getModel(v)}</div>
-                            <span class="text-[10px] font-mono font-bold text-slate-500 bg-slate-100 px-2 py-1 rounded">${getSoldDate(v)}</span>
+                    <div onclick="openSoldDetailModal('${v.id}')" class="bg-white p-4 rounded-xl border border-slate-200/80 shadow-sm space-y-2 cursor-pointer">
+                        <div class="flex justify-between items-start">
+                            <h4 class="font-bold text-slate-900">${model}</h4>
+                            <span class="text-xs font-mono text-slate-400">${soldDate}</span>
                         </div>
-                        <div class="text-xs font-bold text-indigo-600 mb-1 mt-1"><i class="fa-solid fa-user"></i> ${getCustName(v)} <span class="text-slate-400">| Rep: ${getSalesRep(v)}</span></div>
-                        <div class="text-[11px] font-mono font-bold text-slate-600 bg-slate-50 p-2 rounded-lg mb-2 mt-2">
-                            ${getRegNo(v) !== '-' ? `Reg: ${getRegNo(v)}` : `Chassis: ${getChassis(v)}`}
-                        </div>
-                        
-                        <div class="flex justify-between items-center border-t border-slate-100 pt-3 mt-1">
-                            <span class="px-2 py-1 rounded-md text-[10px] font-bold bg-emerald-100 text-emerald-800">${getPayMethod(v)}</span>
-                            <div class="flex gap-2">
-                                <button onclick="openUniversalEdit('${v.id}')" class="bg-indigo-50 text-indigo-600 px-3 py-1.5 rounded-lg text-xs font-bold transition"><i class="fa-solid fa-pen"></i></button>
-                                <button onclick="deleteVehicle('${v.id}')" class="bg-rose-50 text-rose-600 px-3 py-1.5 rounded-lg text-xs font-bold transition"><i class="fa-solid fa-trash"></i></button>
+                        <p class="text-xs text-slate-600">Customer: ${custName} | Rep: ${salesRep}</p>
+                        <div class="pt-2 flex justify-between items-center" onclick="event.stopPropagation()">
+                            <span class="text-xs font-bold text-emerald-600">${payMethod}</span>
+                            <div>
+                                <button onclick="openEditSoldModal('${v.id}')" class="text-indigo-600 p-1 mr-1"><i class="fa-solid fa-pen-to-square"></i></button>
+                                <button onclick="deleteVehicle('${v.id}')" class="text-rose-500 p-1"><i class="fa-solid fa-trash"></i></button>
                             </div>
                         </div>
-                    </div>`;
+                    </div>
+                `;
             });
         }
 
-        // UNIVERSAL EDIT LOGIC
-        function openUniversalEdit(id) {
+        // Available Vehicle Detail Modal
+        function openAvailableDetailModal(id) {
+            const v = vehicles.find(item => item.id === id);
+            if(!v) return;
+            const container = document.getElementById('availableDetailContent');
+            const type = getType(v);
+            const model = getModel(v);
+            const color = getColor(v);
+            const year = getYear(v);
+            const chassis = getChassis(v);
+            const regNo = getRegNo(v);
+            const mileage = getMileage(v);
+
+            container.innerHTML = `
+                <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 text-xs space-y-2">
+                    <p><b>Registration Type:</b> <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${type==='Registered'?'bg-blue-100 text-blue-700':'bg-amber-100 text-amber-700'}">${type}</span></p>
+                    <p><b>Vehicle Model:</b> ${model}</p>
+                    <p><b>Color:</b> ${color}</p>
+                    <p><b>Manufacture Year:</b> ${year}</p>
+                    <p><b>Chassis No:</b> ${chassis}</p>
+                    <p><b>Reg No:</b> ${regNo}</p>
+                    <p><b>Mileage / Notes:</b> ${mileage}</p>
+                </div>
+            `;
+            document.getElementById('availableDetailModal').classList.remove('hidden');
+        }
+
+        function closeAvailableDetailModal() {
+            document.getElementById('availableDetailModal').classList.add('hidden');
+        }
+
+        // Edit Available Vehicle Logic
+        function openEditAvailableModal(id) {
             const v = vehicles.find(item => item.id === id);
             if(!v) return;
 
-            const status = getStatus(v);
-            document.getElementById('editUniId').value = id;
-            document.getElementById('editUniStatus').value = status;
-            
-            // Populate Basic Data
-            document.getElementById('editUniModel').value = getModel(v) === 'Unknown Model' ? '' : getModel(v);
-            document.getElementById('editUniColor').value = getColor(v) === '-' ? '' : getColor(v);
-            document.getElementById('editUniYear').value = getYear(v) === '-' ? '' : getYear(v);
-            document.getElementById('editUniType').value = getType(v);
-            document.getElementById('editUniChassis').value = getChassis(v) === '-' ? '' : getChassis(v);
-            document.getElementById('editUniRegNo').value = getRegNo(v) === '-' ? '' : getRegNo(v);
+            document.getElementById('editAvailId').value = v.id;
+            document.getElementById('editAvailType').value = getType(v);
+            document.getElementById('editAvailModel').value = getModel(v) === 'Unknown Model' ? '' : getModel(v);
+            document.getElementById('editAvailColor').value = getColor(v) === '-' ? '' : getColor(v);
+            document.getElementById('editAvailYear').value = getYear(v) === '-' ? '' : getYear(v);
+            document.getElementById('editAvailChassis').value = getChassis(v) === '-' ? '' : getChassis(v);
+            document.getElementById('editAvailRegNo').value = getRegNo(v) === '-' ? '' : getRegNo(v);
+            document.getElementById('editAvailMileage').value = getMileage(v) === '-' ? '' : getMileage(v);
 
-            // UI Visibility based on Status
-            const secCust = document.getElementById('editUniCustomerSection');
-            const secSold = document.getElementById('editUniSoldSection');
-
-            if (status === 'Available') {
-                secCust.classList.add('hidden');
-                secSold.classList.add('hidden');
-            } else {
-                secCust.classList.remove('hidden');
-                document.getElementById('editUniCustName').value = getCustName(v) === '-' ? '' : getCustName(v);
-                document.getElementById('editUniCustPhone').value = getCustPhone(v) === '-' ? '' : getCustPhone(v);
-                document.getElementById('editUniSalesRep').value = (getSalesRep(v) === '-' || !getSalesRep(v)) ? 'N/A' : getSalesRep(v);
-                
-                const pm = getPayMethod(v);
-                document.getElementById('editUniPayMethod').value = pm;
-                toggleUniPayFields(pm);
-                document.getElementById('editUniLeaseComp').value = getLeaseComp(v);
-                document.getElementById('editUniLeaseOfficer').value = getLeaseOfficer(v);
-                document.getElementById('editUniExModel').value = getExModel(v);
-
-                if (status === 'Sold') {
-                    secSold.classList.remove('hidden');
-                    document.getElementById('editUniSoldDate').value = getSoldDate(v) === '-' ? '' : getSoldDate(v);
-                } else {
-                    secSold.classList.add('hidden');
-                }
-            }
-            document.getElementById('universalEditModal').classList.remove('hidden');
+            document.getElementById('editAvailableModal').classList.remove('hidden');
         }
 
-        function closeUniversalEdit() { document.getElementById('universalEditModal').classList.add('hidden'); }
-
-        function toggleUniPayFields(val) {
-            const leaseDiv = document.getElementById('editUniLeaseFields');
-            const exDiv = document.getElementById('editUniExFields');
-            val.includes('Leasing') ? leaseDiv.classList.remove('hidden') : leaseDiv.classList.add('hidden');
-            val.includes('Exchange') ? exDiv.classList.remove('hidden') : exDiv.classList.add('hidden');
+        function closeEditAvailableModal() {
+            document.getElementById('editAvailableModal').classList.add('hidden');
         }
 
-        document.getElementById('universalEditForm').addEventListener('submit', (e) => {
+        document.getElementById('editAvailableForm').addEventListener('submit', (e) => {
             e.preventDefault();
-            const id = document.getElementById('editUniId').value;
-            const status = document.getElementById('editUniStatus').value;
-            const btn = document.getElementById('btnUniEditSubmit');
+            const btn = document.getElementById('btnEditAvailSubmit');
             btn.disabled = true;
 
+            const id = document.getElementById('editAvailId').value;
             const updatedData = {
-                vModel: document.getElementById('editUniModel').value,
-                vColor: document.getElementById('editUniColor').value,
-                vYear: document.getElementById('editUniYear').value,
-                vType: document.getElementById('editUniType').value,
-                vChassis: document.getElementById('editUniChassis').value,
-                vRegNo: document.getElementById('editUniRegNo').value,
+                vType: document.getElementById('editAvailType').value,
+                vModel: document.getElementById('editAvailModel').value,
+                vColor: document.getElementById('editAvailColor').value,
+                vYear: document.getElementById('editAvailYear').value,
+                vChassis: document.getElementById('editAvailChassis').value,
+                vRegNo: document.getElementById('editAvailRegNo').value || '-',
+                vMileage: document.getElementById('editAvailMileage').value || '-'
             };
 
-            if (status === 'Advanced' || status === 'Sold') {
-                updatedData.custName = document.getElementById('editUniCustName').value;
-                updatedData.custPhone = document.getElementById('editUniCustPhone').value;
-                updatedData.salesRep = document.getElementById('editUniSalesRep').value;
-                updatedData.payMethod = document.getElementById('editUniPayMethod').value;
-                updatedData.leaseComp = document.getElementById('editUniLeaseComp').value || '';
-                updatedData.leaseOfficer = document.getElementById('editUniLeaseOfficer').value || '';
-                updatedData.exModel = document.getElementById('editUniExModel').value || '';
-            }
-            if (status === 'Sold') {
-                updatedData.soldDate = document.getElementById('editUniSoldDate').value;
-            }
-
-            db.collection("vehicles").doc(id).update(updatedData).then(() => closeUniversalEdit()).finally(() => btn.disabled = false);
+            db.collection("vehicles").doc(id).update(updatedData).then(() => {
+                closeEditAvailableModal();
+            }).finally(() => btn.disabled = false);
         });
 
-        // OTHER ACTIONS
-        function openAdvanceModal(id) { document.getElementById('advVehicleId').value = id; document.getElementById('advanceModal').classList.remove('hidden'); }
-        function closeModal() { document.getElementById('advanceModal').classList.add('hidden'); document.getElementById('advanceForm').reset(); }
-        
+        // Edit Advanced Vehicle Logic
+        function openEditAdvancedModal(id) {
+            const v = vehicles.find(item => item.id === id);
+            if(!v) return;
+
+            document.getElementById('editAdvId').value = v.id;
+            document.getElementById('editAdvCustName').value = getCustName(v) === '-' ? '' : getCustName(v);
+            document.getElementById('editAdvCustPhone').value = getCustPhone(v) === '-' ? '' : getCustPhone(v);
+            document.getElementById('editAdvSalesRep').value = getSalesRep(v) === '-' ? 'Thushan' : getSalesRep(v);
+
+            const pm = getPayMethod(v);
+            document.getElementById('editAdvPayMethod').value = pm;
+            togglePayFields(pm, 'editAdv');
+
+            document.getElementById('editAdvLeaseComp').value = getLeaseComp(v);
+            document.getElementById('editAdvLeaseOfficer').value = getLeaseOfficer(v);
+            document.getElementById('editAdvExModel').value = getExModel(v);
+
+            document.getElementById('editAdvancedModal').classList.remove('hidden');
+        }
+
+        function closeEditAdvancedModal() {
+            document.getElementById('editAdvancedModal').classList.add('hidden');
+        }
+
+        document.getElementById('editAdvancedForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('btnEditAdvSubmit');
+            btn.disabled = true;
+
+            const id = document.getElementById('editAdvId').value;
+            const updatedData = {
+                custName: document.getElementById('editAdvCustName').value,
+                custPhone: document.getElementById('editAdvCustPhone').value,
+                salesRep: document.getElementById('editAdvSalesRep').value,
+                payMethod: document.getElementById('editAdvPayMethod').value,
+                leaseComp: document.getElementById('editAdvLeaseComp').value || '',
+                leaseOfficer: document.getElementById('editAdvLeaseOfficer').value || '',
+                exModel: document.getElementById('editAdvExModel').value || ''
+            };
+
+            db.collection("vehicles").doc(id).update(updatedData).then(() => {
+                closeEditAdvancedModal();
+            }).finally(() => btn.disabled = false);
+        });
+
+        // Advance Modal Logic
+        function openAdvanceModal(id) {
+            document.getElementById('advVehicleId').value = id;
+            document.getElementById('advanceModal').classList.remove('hidden');
+        }
+        function closeModal() {
+            document.getElementById('advanceModal').classList.add('hidden');
+            document.getElementById('advanceForm').reset();
+            togglePayFields('Cash', 'adv');
+        }
+
         document.getElementById('advanceForm').addEventListener('submit', (e) => {
             e.preventDefault();
-            db.collection("vehicles").doc(document.getElementById('advVehicleId').value).update({
-                status: 'Advanced', custName: document.getElementById('custName').value, custPhone: document.getElementById('custPhone').value,
-                salesRep: document.getElementById('salesRep').value, payMethod: document.getElementById('payMethod').value,
-                leaseComp: document.getElementById('leaseComp').value, leaseOfficer: document.getElementById('leaseOfficer').value, exModel: document.getElementById('exModel').value
-            }).then(() => { closeModal(); switchTab('advanced'); });
+            const btn = document.getElementById('btnAdvSubmit');
+            btn.disabled = true;
+
+            const id = document.getElementById('advVehicleId').value;
+            const updateData = {
+                status: 'Advanced',
+                custName: document.getElementById('custName').value,
+                custPhone: document.getElementById('custPhone').value,
+                salesRep: document.getElementById('salesRep').value,
+                payMethod: document.getElementById('payMethod').value,
+                leaseComp: document.getElementById('leaseComp').value || '',
+                leaseOfficer: document.getElementById('leaseOfficer').value || '',
+                exModel: document.getElementById('exModel').value || ''
+            };
+
+            db.collection("vehicles").doc(id).update(updateData).then(() => {
+                closeModal();
+                switchTab('advanced');
+            }).finally(() => btn.disabled = false);
         });
 
         function cancelAdvance(id) {
-            if(confirm("Cancel reservation?")) db.collection("vehicles").doc(id).update({
-                status: 'Available', custName: firebase.firestore.FieldValue.delete(), custPhone: firebase.firestore.FieldValue.delete(),
-                salesRep: firebase.firestore.FieldValue.delete(), payMethod: firebase.firestore.FieldValue.delete(),
-                leaseComp: firebase.firestore.FieldValue.delete(), leaseOfficer: firebase.firestore.FieldValue.delete(), exModel: firebase.firestore.FieldValue.delete()
-            });
+            if(confirm("Are you sure you want to cancel this advance reservation?")) {
+                db.collection("vehicles").doc(id).update({
+                    status: 'Available',
+                    custName: firebase.firestore.FieldValue.delete(),
+                    custPhone: firebase.firestore.FieldValue.delete(),
+                    salesRep: firebase.firestore.FieldValue.delete(),
+                    payMethod: firebase.firestore.FieldValue.delete(),
+                    leaseComp: firebase.firestore.FieldValue.delete(),
+                    leaseOfficer: firebase.firestore.FieldValue.delete(),
+                    exModel: firebase.firestore.FieldValue.delete()
+                });
+            }
         }
-        function markAsSold(id) { db.collection("vehicles").doc(id).update({ status: 'Sold', soldDate: new Date().toISOString().split('T')[0] }).then(() => switchTab('sold')); }
-        function deleteVehicle(id) { if(confirm("Permanently delete record?")) db.collection("vehicles").doc(id).delete(); }
-        
-        // Past sale
-        function openPastSaleModal() { document.getElementById('pastSaleModal').classList.remove('hidden'); }
-        function closePastSaleModal() { document.getElementById('pastSaleModal').classList.add('hidden'); }
+
+        function markAsSold(id) {
+            const today = new Date().toISOString().split('T')[0];
+            db.collection("vehicles").doc(id).update({
+                status: 'Sold',
+                soldDate: today
+            }).then(() => switchTab('sold'));
+        }
+
+        function deleteVehicle(id) {
+            if(confirm("Are you sure you want to delete this record permanently?")) {
+                db.collection("vehicles").doc(id).delete();
+            }
+        }
+
+        // Past Sale Modal Logic
+        function openPastSaleModal() {
+            document.getElementById('pastSaleModal').classList.remove('hidden');
+        }
+        function closePastSaleModal() {
+            document.getElementById('pastSaleModal').classList.add('hidden');
+            document.getElementById('pastSaleForm').reset();
+            togglePayFields('Cash', 'past');
+        }
+
         document.getElementById('pastSaleForm').addEventListener('submit', (e) => {
             e.preventDefault();
-            db.collection("vehicles").add({
-                vModel: document.getElementById('pastModel').value, vColor: document.getElementById('pastColor').value,
-                vChassis: document.getElementById('pastChassis').value, vRegNo: document.getElementById('pastRegNo').value,
-                custName: document.getElementById('pastCustName').value, custPhone: document.getElementById('pastCustPhone').value,
-                salesRep: document.getElementById('pastSalesRep').value, payMethod: document.getElementById('pastPayMethod').value,
-                leaseComp: document.getElementById('pastLeaseComp').value, leaseOfficer: document.getElementById('pastLeaseOfficer').value,
-                exModel: document.getElementById('pastExModel').value, soldDate: document.getElementById('pastSoldDate').value, status: 'Sold'
-            }).then(() => { closePastSaleModal(); switchTab('sold'); });
+            const btn = document.getElementById('btnPastSubmit');
+            btn.disabled = true;
+
+            const pastSale = {
+                vModel: document.getElementById('pastModel').value,
+                vColor: document.getElementById('pastColor').value,
+                vChassis: document.getElementById('pastChassis').value || '-',
+                vRegNo: document.getElementById('pastRegNo').value || '-',
+                vMileage: document.getElementById('pastMileage').value || '-',
+                custName: document.getElementById('pastCustName').value,
+                custPhone: document.getElementById('pastCustPhone').value || '-',
+                salesRep: document.getElementById('pastSalesRep').value,
+                payMethod: document.getElementById('pastPayMethod').value,
+                leaseComp: document.getElementById('pastLeaseComp').value || '',
+                leaseOfficer: document.getElementById('pastLeaseOfficer').value || '',
+                exModel: document.getElementById('pastExModel').value || '',
+                soldDate: document.getElementById('pastSoldDate').value,
+                status: 'Sold',
+                createdAt: new Date().toISOString()
+            };
+
+            db.collection("vehicles").add(pastSale).then(() => {
+                closePastSaleModal();
+                switchTab('sold');
+            }).finally(() => btn.disabled = false);
         });
 
-        function clearMonthFilter() { document.getElementById('filterMonth').value = ''; renderSold(); }
+        // Sold Details View Modal
+        function openSoldDetailModal(id) {
+            const v = vehicles.find(item => item.id === id);
+            if(!v) return;
+            const container = document.getElementById('soldDetailContent');
+            const model = getModel(v);
+            const color = getColor(v);
+            const year = getYear(v);
+            const chassis = getChassis(v);
+            const regNo = getRegNo(v);
+            const mileage = getMileage(v);
+            const custName = getCustName(v);
+            const custPhone = getCustPhone(v);
+            const salesRep = getSalesRep(v);
+            const payMethod = getPayMethod(v);
+            const leaseComp = getLeaseComp(v);
+            const leaseOfficer = getLeaseOfficer(v);
+            const exModel = getExModel(v);
+            const soldDate = getSoldDate(v);
 
-        // PDF GENERATION
+            container.innerHTML = `
+                <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 text-xs space-y-2">
+                    <p><b>Vehicle Model:</b> ${model} (${color})</p>
+                    <p><b>Manufacture Year:</b> ${year}</p>
+                    <p><b>Chassis No:</b> ${chassis}</p>
+                    <p><b>Reg No:</b> ${regNo}</p>
+                    <p><b>Mileage / Notes:</b> ${mileage}</p>
+                    <hr class="my-2 border-slate-200">
+                    <p><b>Customer Name:</b> ${custName}</p>
+                    <p><b>Phone Number:</b> ${custPhone}</p>
+                    <p><b>Sales Representative:</b> ${salesRep}</p>
+                    <p><b>Payment Method:</b> <span class="font-bold text-emerald-700">${payMethod}</span></p>
+                    ${payMethod.includes('Leasing') ? `<p><b>Leasing Company:</b> ${leaseComp || '-'} (${leaseOfficer || '-'})</p>` : ''}
+                    ${payMethod.includes('Exchange') ? `<p class="text-amber-700 font-semibold"><b>Exchange Vehicle:</b> ${exModel || '-'}</p>` : ''}
+                    <p><b>Sold Date:</b> ${soldDate}</p>
+                </div>
+            `;
+            document.getElementById('soldDetailModal').classList.remove('hidden');
+        }
+        function closeSoldDetailModal() {
+            document.getElementById('soldDetailModal').classList.add('hidden');
+        }
+
+        // Edit Sold Record Logic
+        function openEditSoldModal(id) {
+            const v = vehicles.find(item => item.id === id);
+            if(!v) return;
+
+            document.getElementById('editSoldId').value = v.id;
+            document.getElementById('editModel').value = getModel(v) === 'Unknown Model' ? '' : getModel(v);
+            document.getElementById('editColor').value = getColor(v) === '-' ? '' : getColor(v);
+            document.getElementById('editYear').value = getYear(v) === '-' ? '' : getYear(v);
+            document.getElementById('editChassis').value = getChassis(v) === '-' ? '' : getChassis(v);
+            document.getElementById('editRegNo').value = getRegNo(v) === '-' ? '' : getRegNo(v);
+            document.getElementById('editMileage').value = getMileage(v) === '-' ? '' : getMileage(v);
+            document.getElementById('editCustName').value = getCustName(v) === '-' ? '' : getCustName(v);
+            document.getElementById('editCustPhone').value = getCustPhone(v) === '-' ? '' : getCustPhone(v);
+            document.getElementById('editSalesRep').value = getSalesRep(v) === '-' ? 'Thushan' : getSalesRep(v);
+
+            const pm = getPayMethod(v);
+            document.getElementById('editPayMethod').value = pm;
+            togglePayFields(pm, 'edit');
+
+            document.getElementById('editLeaseComp').value = getLeaseComp(v);
+            document.getElementById('editLeaseOfficer').value = getLeaseOfficer(v);
+            document.getElementById('editExModel').value = getExModel(v);
+            document.getElementById('editSoldDate').value = getSoldDate(v) === '-' ? '' : getSoldDate(v);
+
+            document.getElementById('editSoldModal').classList.remove('hidden');
+        }
+        function closeEditSoldModal() {
+            document.getElementById('editSoldModal').classList.add('hidden');
+        }
+
+        document.getElementById('editSoldForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('btnEditSubmit');
+            btn.disabled = true;
+
+            const id = document.getElementById('editSoldId').value;
+            const updatedData = {
+                vModel: document.getElementById('editModel').value,
+                vColor: document.getElementById('editColor').value,
+                vYear: document.getElementById('editYear').value,
+                vChassis: document.getElementById('editChassis').value,
+                vRegNo: document.getElementById('editRegNo').value,
+                vMileage: document.getElementById('editMileage').value,
+                custName: document.getElementById('editCustName').value,
+                custPhone: document.getElementById('editCustPhone').value,
+                salesRep: document.getElementById('editSalesRep').value,
+                payMethod: document.getElementById('editPayMethod').value,
+                leaseComp: document.getElementById('editLeaseComp').value || '',
+                leaseOfficer: document.getElementById('editLeaseOfficer').value || '',
+                exModel: document.getElementById('editExModel').value || '',
+                soldDate: document.getElementById('editSoldDate').value
+            };
+
+            db.collection("vehicles").doc(id).update(updatedData).then(() => {
+                closeEditSoldModal();
+            }).finally(() => btn.disabled = false);
+        });
+
+        function clearMonthFilter() {
+            document.getElementById('filterMonth').value = '';
+            renderSold();
+        }
+
+        // Updated PDF Generation via jsPDF (Sales Rep & Month Filter Aware)
         function downloadSoldPDF() {
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
             
-            const repFilter = document.getElementById('filterRep').value;
-            const monthFilter = document.getElementById('filterMonth').value;
-            const searchQuery = document.getElementById('searchSold').value.toLowerCase();
+            const selectedRep = document.getElementById('filterRep')?.value || 'ALL';
+            const selectedMonth = document.getElementById('filterMonth')?.value || '';
 
             let soldList = vehicles.filter(v => getStatus(v) === 'Sold');
-            soldList.sort((a, b) => (getSoldDate(b) === '-' ? '' : getSoldDate(b)).localeCompare(getSoldDate(a) === '-' ? '' : getSoldDate(a)));
-            
-            if (repFilter !== 'ALL') soldList = soldList.filter(v => getSalesRep(v) === repFilter);
-            if (monthFilter) soldList = soldList.filter(v => getSoldDate(v) && getSoldDate(v).startsWith(monthFilter));
-            if (searchQuery) soldList = soldList.filter(v => getModel(v).toLowerCase().includes(searchQuery) || getCustName(v).toLowerCase().includes(searchQuery));
 
-            doc.setFontSize(16);
-            doc.text("Nandana Enterprises - Sold Vehicles Report", 14, 15);
-            doc.setFontSize(10);
-            doc.text(`Sales Rep: ${repFilter} | Total Sold: ${soldList.length} Vehicles`, 14, 22);
+            // Sales Rep filter yodhim
+            if (selectedRep !== 'ALL') {
+                soldList = soldList.filter(v => getSalesRep(v) === selectedRep);
+            }
 
-            let headColumns = [];
-            let tableData = [];
-
-            if (repFilter !== 'ALL') {
-                headColumns = [['No.', 'Sold Date', 'Model', 'Color', 'YOM', 'Reg/Chassis No', 'Payment Info']];
-                tableData = soldList.map((v, i) => {
-                    let payInfo = getPayMethod(v);
-                    if (getExModel(v)) payInfo += ` (Ex: ${getExModel(v)})`;
-                    return [
-                        `${i + 1})`, 
-                        getSoldDate(v), 
-                        getModel(v), 
-                        getColor(v), 
-                        getYear(v), 
-                        getRegNo(v) !== '-' ? getRegNo(v) : getChassis(v), 
-                        payInfo
-                    ];
-                });
-            } else {
-                headColumns = [['No.', 'Sold Date', 'Model', 'Color', 'YOM', 'Reg/Chassis No', 'Rep', 'Payment Info']];
-                tableData = soldList.map((v, i) => {
-                    let payInfo = getPayMethod(v);
-                    if (getExModel(v)) payInfo += ` (Ex: ${getExModel(v)})`;
-                    return [
-                        `${i + 1})`, 
-                        getSoldDate(v), 
-                        getModel(v), 
-                        getColor(v), 
-                        getYear(v), 
-                        getRegNo(v) !== '-' ? getRegNo(v) : getChassis(v), 
-                        getSalesRep(v), 
-                        payInfo
-                    ];
+            // Month filter yodhim
+            if (selectedMonth) {
+                soldList = soldList.filter(v => {
+                    const d = getSoldDate(v);
+                    return d && d.startsWith(selectedMonth);
                 });
             }
 
-            doc.autoTable({
-                startY: 28,
-                head: headColumns,
-                body: tableData,
-                theme: 'striped',
-                headStyles: { fillColor: [15, 23, 42] },
-                styles: { fontSize: 8 }
+            // Date accending order sort
+            soldList.sort((a, b) => {
+                const dateA = getSoldDate(a);
+                const dateB = getSoldDate(b);
+                const safeA = dateA === '-' ? '' : dateA;
+                const safeB = dateB === '-' ? '' : dateB;
+                return safeA.localeCompare(safeB);
             });
 
-            doc.save(`Nandana_Enterprises_Report_${new Date().toISOString().split('T')[0]}.pdf`);
+            // Header Content Setup
+            doc.setFontSize(16);
+            doc.text("Nandana Enterprises - Sold Vehicles Report", 14, 15);
+            
+            doc.setFontSize(10);
+            doc.text(`Sales Person: ${selectedRep === 'ALL' ? 'All Sales Reps' : selectedRep}`, 14, 22);
+            
+            let currentY = 27;
+            if (selectedMonth) {
+                doc.text(`Month Filter: ${selectedMonth}`, 14, currentY);
+                currentY += 5;
+            }
+            doc.text(`Generated Date: ${new Date().toLocaleDateString()}`, 14, currentY);
+
+            // Table Data Ordering
+            const tableData = soldList.map((v, index) => {
+                const chassis = getChassis(v);
+                const regNo = getRegNo(v);
+                const chassisOrReg = (chassis && chassis !== '-' && chassis.trim() !== '') ? chassis : regNo;
+
+                return [
+                    index + 1,
+                    getSoldDate(v),
+                    getModel(v),
+                    chassisOrReg,
+                    getColor(v),
+                    getMileage(v),
+                    getSalesRep(v)
+                ];
+            });
+
+            const startYTable = currentY + 6;
+
+            doc.autoTable({
+                startY: startYTable,
+                head: [['No', 'Date', 'Model & Make', 'Chassis / Reg No', 'Color', 'YOM / Notes', 'Sales Rep']],
+                body: tableData,
+                theme: 'striped',
+                headStyles: { 
+                    fillColor: [15, 23, 42], 
+                    textColor: [255, 255, 255], 
+                    fontStyle: 'bold' 
+                },
+                alternateRowStyles: { 
+                    fillColor: [241, 245, 249]
+                },
+                styles: { fontSize: 8.5, cellPadding: 3 }
+            });
+
+            const fileNameRep = selectedRep === 'ALL' ? 'All' : selectedRep;
+            doc.save(`Nandana_Enterprises_Sold_Report_${fileNameRep}_${new Date().toISOString().split('T')[0]}.pdf`);
         }
     </script>
 </body>
