@@ -212,12 +212,6 @@
 
                     <div class="flex flex-wrap items-center gap-2">
                         <select id="filterRep" onchange="renderSold()" class="p-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold outline-none focus:ring-2 focus:ring-indigo-500">
-                            <option value="ALL">All Sales Reps</option>
-                            <option value="Thushan">Thushan</option>
-                            <option value="Aravinda">Aravinda</option>
-                            <option value="Nethwan">Nethwan</option>
-                            <option value="Prasanna">Prasanna</option>
-                            <option value="Sithum">Sithum</option>
                         </select>
 
                         <div class="flex items-center gap-1 bg-slate-50 border border-slate-200 p-1 rounded-xl">
@@ -348,13 +342,13 @@
                     <input type="text" id="editAdvCustPhone" class="w-full p-2.5 bg-slate-50 border rounded-xl text-sm font-medium outline-none focus:ring-2 focus:ring-indigo-500" required>
                 </div>
                 <div>
-                    <label class="block text-xs font-bold text-slate-500 mb-1">Sales Representative</label>
+                    <div class="flex justify-between items-center mb-1">
+                        <label class="block text-xs font-bold text-slate-500">Sales Representative</label>
+                        <button type="button" onclick="addNewSalesRep()" class="text-[11px] font-bold text-indigo-600 hover:text-indigo-800 flex items-center gap-1">
+                            <i class="fa-solid fa-plus-circle"></i> Add Sales Person
+                        </button>
+                    </div>
                     <select id="editAdvSalesRep" class="w-full p-2.5 bg-slate-50 border rounded-xl text-sm font-medium outline-none focus:ring-2 focus:ring-indigo-500" required>
-                        <option value="Thushan">Thushan</option>
-                        <option value="Aravinda">Aravinda</option>
-                        <option value="Nethwan">Nethwan</option>
-                        <option value="Prasanna">Prasanna</option>
-                        <option value="Sithum">Sithum</option>
                     </select>
                 </div>
                 <div>
@@ -423,13 +417,13 @@
                     <input type="text" id="custPhone" placeholder="Enter phone number" class="w-full p-2.5 bg-slate-50 border rounded-xl text-sm font-medium outline-none focus:ring-2 focus:ring-indigo-500" required>
                 </div>
                 <div>
-                    <label class="block text-xs font-bold text-slate-500 mb-1">Sales Representative</label>
+                    <div class="flex justify-between items-center mb-1">
+                        <label class="block text-xs font-bold text-slate-500">Sales Representative</label>
+                        <button type="button" onclick="addNewSalesRep()" class="text-[11px] font-bold text-indigo-600 hover:text-indigo-800 flex items-center gap-1">
+                            <i class="fa-solid fa-plus-circle"></i> Add Sales Person
+                        </button>
+                    </div>
                     <select id="salesRep" class="w-full p-2.5 bg-slate-50 border rounded-xl text-sm font-medium outline-none focus:ring-2 focus:ring-indigo-500" required>
-                        <option value="Thushan">Thushan</option>
-                        <option value="Aravinda">Aravinda</option>
-                        <option value="Nethwan">Nethwan</option>
-                        <option value="Prasanna">Prasanna</option>
-                        <option value="Sithum">Sithum</option>
                     </select>
                 </div>
                 <div>
@@ -501,13 +495,13 @@
                     <input type="text" id="pastCustPhone" placeholder="Enter Customer Phone" class="w-full p-2.5 bg-slate-50 border rounded-xl text-sm font-medium outline-none focus:ring-2 focus:ring-indigo-500">
                 </div>
                 <div>
-                    <label class="block text-xs font-bold text-slate-500 mb-1">Sales Representative</label>
+                    <div class="flex justify-between items-center mb-1">
+                        <label class="block text-xs font-bold text-slate-500">Sales Representative</label>
+                        <button type="button" onclick="addNewSalesRep()" class="text-[11px] font-bold text-indigo-600 hover:text-indigo-800 flex items-center gap-1">
+                            <i class="fa-solid fa-plus-circle"></i> Add Sales Person
+                        </button>
+                    </div>
                     <select id="pastSalesRep" class="w-full p-2.5 bg-slate-50 border rounded-xl text-sm font-medium outline-none focus:ring-2 focus:ring-indigo-500" required>
-                        <option value="Thushan">Thushan</option>
-                        <option value="Aravinda">Aravinda</option>
-                        <option value="Nethwan">Nethwan</option>
-                        <option value="Prasanna">Prasanna</option>
-                        <option value="Sithum">Sithum</option>
                     </select>
                 </div>
                 <div>
@@ -594,13 +588,13 @@
                 </div>
                 <div class="grid grid-cols-2 gap-2">
                     <div>
-                        <label class="block text-xs font-bold text-slate-500 mb-1">Sales Rep</label>
+                        <div class="flex justify-between items-center mb-1">
+                            <label class="block text-xs font-bold text-slate-500">Sales Rep</label>
+                            <button type="button" onclick="addNewSalesRep()" class="text-[10px] font-bold text-indigo-600 hover:text-indigo-800 flex items-center gap-0.5">
+                                <i class="fa-solid fa-plus-circle"></i> Add
+                            </button>
+                        </div>
                         <select id="editSalesRep" class="w-full p-2.5 bg-slate-50 border rounded-xl text-sm font-medium outline-none focus:ring-2 focus:ring-indigo-500" required>
-                            <option value="Thushan">Thushan</option>
-                            <option value="Aravinda">Aravinda</option>
-                            <option value="Nethwan">Nethwan</option>
-                            <option value="Prasanna">Prasanna</option>
-                            <option value="Sithum">Sithum</option>
                         </select>
                     </div>
                     <div>
@@ -656,6 +650,50 @@
         const db = firebase.firestore();
 
         let vehicles = [];
+
+        // Dynamic Sales Representatives List (with LocalStorage support & N/A option)
+        let salesReps = JSON.parse(localStorage.getItem('salesReps')) || ["N/A", "Thushan", "Aravinda", "Nethwan", "Prasanna", "Sithum"];
+
+        function updateSalesRepDropdowns() {
+            const selectIds = ['editAdvSalesRep', 'salesRep', 'pastSalesRep', 'editSalesRep'];
+            selectIds.forEach(id => {
+                const el = document.getElementById(id);
+                if (el) {
+                    const currentVal = el.value;
+                    el.innerHTML = salesReps.map(r => `<option value="${r}">${r}</option>`).join('');
+                    if (currentVal && salesReps.includes(currentVal)) {
+                        el.value = currentVal;
+                    }
+                }
+            });
+
+            const filterEl = document.getElementById('filterRep');
+            if (filterEl) {
+                const currentVal = filterEl.value;
+                filterEl.innerHTML = `<option value="ALL">All Sales Reps</option>` + salesReps.map(r => `<option value="${r}">${r}</option>`).join('');
+                if (currentVal && (salesReps.includes(currentVal) || currentVal === 'ALL')) {
+                    filterEl.value = currentVal;
+                }
+            }
+        }
+
+        function addNewSalesRep() {
+            const name = prompt("Enter New Sales Representative Name:");
+            if (name && name.trim() !== '') {
+                const trimmedName = name.trim();
+                if (!salesReps.includes(trimmedName)) {
+                    salesReps.push(trimmedName);
+                    localStorage.setItem('salesReps', JSON.stringify(salesReps));
+                    updateSalesRepDropdowns();
+                    alert(`"${trimmedName}" named Sales Representative added successfully!`);
+                } else {
+                    alert("This Sales Representative is already in the list!");
+                }
+            }
+        }
+
+        // Initialize Dropdowns
+        updateSalesRepDropdowns();
 
         // Realtime Database Listener
         db.collection("vehicles").onSnapshot((snapshot) => {
@@ -1119,10 +1157,13 @@
             const v = vehicles.find(item => item.id === id);
             if(!v) return;
 
+            updateSalesRepDropdowns();
             document.getElementById('editAdvId').value = v.id;
             document.getElementById('editAdvCustName').value = getCustName(v) === '-' ? '' : getCustName(v);
             document.getElementById('editAdvCustPhone').value = getCustPhone(v) === '-' ? '' : getCustPhone(v);
-            document.getElementById('editAdvSalesRep').value = getSalesRep(v) === '-' ? 'Thushan' : getSalesRep(v);
+
+            const repVal = getSalesRep(v) === '-' ? 'N/A' : getSalesRep(v);
+            document.getElementById('editAdvSalesRep').value = salesReps.includes(repVal) ? repVal : 'N/A';
 
             const pm = getPayMethod(v);
             document.getElementById('editAdvPayMethod').value = pm;
@@ -1162,9 +1203,11 @@
 
         // Advance Modal Logic
         function openAdvanceModal(id) {
+            updateSalesRepDropdowns();
             document.getElementById('advVehicleId').value = id;
             document.getElementById('advanceModal').classList.remove('hidden');
         }
+
         function closeModal() {
             document.getElementById('advanceModal').classList.add('hidden');
             document.getElementById('advanceForm').reset();
@@ -1225,8 +1268,10 @@
 
         // Past Sale Modal Logic
         function openPastSaleModal() {
+            updateSalesRepDropdowns();
             document.getElementById('pastSaleModal').classList.remove('hidden');
         }
+
         function closePastSaleModal() {
             document.getElementById('pastSaleModal').classList.add('hidden');
             document.getElementById('pastSaleForm').reset();
@@ -1301,6 +1346,7 @@
             `;
             document.getElementById('soldDetailModal').classList.remove('hidden');
         }
+
         function closeSoldDetailModal() {
             document.getElementById('soldDetailModal').classList.add('hidden');
         }
@@ -1310,6 +1356,7 @@
             const v = vehicles.find(item => item.id === id);
             if(!v) return;
 
+            updateSalesRepDropdowns();
             document.getElementById('editSoldId').value = v.id;
             document.getElementById('editModel').value = getModel(v) === 'Unknown Model' ? '' : getModel(v);
             document.getElementById('editColor').value = getColor(v) === '-' ? '' : getColor(v);
@@ -1319,7 +1366,9 @@
             document.getElementById('editMileage').value = getMileage(v) === '-' ? '' : getMileage(v);
             document.getElementById('editCustName').value = getCustName(v) === '-' ? '' : getCustName(v);
             document.getElementById('editCustPhone').value = getCustPhone(v) === '-' ? '' : getCustPhone(v);
-            document.getElementById('editSalesRep').value = getSalesRep(v) === '-' ? 'Thushan' : getSalesRep(v);
+
+            const repVal = getSalesRep(v) === '-' ? 'N/A' : getSalesRep(v);
+            document.getElementById('editSalesRep').value = salesReps.includes(repVal) ? repVal : 'N/A';
 
             const pm = getPayMethod(v);
             document.getElementById('editPayMethod').value = pm;
@@ -1332,6 +1381,7 @@
 
             document.getElementById('editSoldModal').classList.remove('hidden');
         }
+
         function closeEditSoldModal() {
             document.getElementById('editSoldModal').classList.add('hidden');
         }
@@ -1369,7 +1419,7 @@
             renderSold();
         }
 
-        // Updated PDF Generation via jsPDF (Sales Rep & Month Filter Aware)
+        // PDF Generation via jsPDF
         function downloadSoldPDF() {
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
@@ -1379,12 +1429,10 @@
 
             let soldList = vehicles.filter(v => getStatus(v) === 'Sold');
 
-            // Sales Rep filter yodhim
             if (selectedRep !== 'ALL') {
                 soldList = soldList.filter(v => getSalesRep(v) === selectedRep);
             }
 
-            // Month filter yodhim
             if (selectedMonth) {
                 soldList = soldList.filter(v => {
                     const d = getSoldDate(v);
@@ -1392,7 +1440,6 @@
                 });
             }
 
-            // Date accending order sort
             soldList.sort((a, b) => {
                 const dateA = getSoldDate(a);
                 const dateB = getSoldDate(b);
@@ -1401,7 +1448,6 @@
                 return safeA.localeCompare(safeB);
             });
 
-            // Header Content Setup
             doc.setFontSize(16);
             doc.text("Nandana Enterprises - Sold Vehicles Report", 14, 15);
             
@@ -1415,7 +1461,6 @@
             }
             doc.text(`Generated Date: ${new Date().toLocaleDateString()}`, 14, currentY);
 
-            // Table Data Ordering
             const tableData = soldList.map((v, index) => {
                 const chassis = getChassis(v);
                 const regNo = getRegNo(v);
