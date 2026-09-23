@@ -1373,7 +1373,7 @@
             }).finally(() => btn.disabled = false);
         });
 
-        // Sold Details View Modal
+        // Sold Details View Modal (FIXED)
         function openSoldDetailModal(id) {
             const v = vehicles.find(item => item.id === id);
             if(!v) return;
@@ -1405,7 +1405,7 @@
                     <p><b>Phone Number:</b> ${custPhone}</p>
                     <p><b>Sales Representative:</b> ${salesRep}</p>
                     <p><b>Payment Method:</b> <span class="font-bold text-emerald-700">${payMethod}</span></p>
-                    ${payMethod.includes('Leasing') ? `<p><b>Leasing Company:</b> ${leaseComp \vert{}\vert{} '-'} (${leaseOfficer || '-'})</p>` : ''}
+                    ${payMethod.includes('Leasing') ? `<p><b>Leasing Company:</b> ${leaseComp || '-'} (${leaseOfficer || '-'})</p>` : ''}
                     ${payMethod.includes('Exchange') ? `<p class="text-amber-700 font-semibold"><b>Exchange Vehicle:</b> ${exModel || '-'}</p>` : ''}
                     <p><b>Sold Date:</b> ${soldDate}</p>
                 </div>
