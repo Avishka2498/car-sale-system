@@ -40,6 +40,29 @@
 </head>
 <body class="text-slate-800 antialiased selection:bg-indigo-500 selection:text-white">
 
+    <!-- ADMIN PIN LOGIN OVERLAY -->
+    <div id="pinModal" class="fixed inset-0 bg-slate-900/90 backdrop-blur-md flex items-center justify-center z-50 p-4">
+        <div class="bg-white p-6 rounded-2xl shadow-2xl w-full max-w-sm text-center border border-slate-100 space-y-4">
+            <div class="bg-indigo-100 text-indigo-600 w-14 h-14 rounded-full flex items-center justify-center mx-auto text-2xl font-bold">
+                <i class="fa-solid fa-lock"></i>
+            </div>
+            <div>
+                <h2 class="text-xl font-extrabold text-slate-900">Admin Login</h2>
+                <p class="text-xs text-slate-500 mt-1">Please enter PIN to access the system</p>
+            </div>
+            
+            <input type="password" id="pinInput" maxlength="4" placeholder="****" autofocus 
+                class="w-full text-center text-3xl font-bold tracking-widest border border-slate-200 p-3 rounded-xl bg-slate-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white">
+            
+            <button onclick="verifyPin()" 
+                class="w-full bg-indigo-600 text-white py-3 rounded-xl font-bold hover:bg-indigo-700 transition shadow-sm active:scale-[0.99]">
+                Login System
+            </button>
+            
+            <p id="pinError" class="text-rose-500 text-xs font-semibold hidden">❌ වැරදි PIN අංකයකි! නැවත උත්සාහ කරන්න.</p>
+        </div>
+    </div>
+
     <!-- Top Navigation Header -->
     <header class="bg-slate-900 text-white sticky top-0 z-40 shadow-md">
         <div class="max-w-7xl mx-auto px-4 py-3.5 flex justify-between items-center">
@@ -52,9 +75,14 @@
                     <p class="text-[10px] md:text-xs text-slate-400 font-medium">Vehicle Management & Sales System</p>
                 </div>
             </div>
-            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> Cloud Sync Active
-            </span>
+            <div class="flex items-center gap-3">
+                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> Cloud Sync Active
+                </span>
+                <button onclick="logoutAdmin()" title="Logout Admin" class="bg-rose-600/80 hover:bg-rose-600 text-white px-3 py-1 rounded-lg text-xs font-bold transition">
+                    <i class="fa-solid fa-right-from-bracket"></i> Logout
+                </button>
+            </div>
         </div>
     </header>
 
@@ -635,6 +663,44 @@
 
     <!-- JavaScript Application Logic -->
     <script>
+        // ADMIN PIN LOGIC
+        const ADMIN_PIN = "0777"; // Default PIN number (Change this to whatever PIN you like)
+
+        function verifyPin() {
+            const inputPin = document.getElementById("pinInput").value;
+            const errorMsg = document.getElementById("pinError");
+
+            if (inputPin === ADMIN_PIN) {
+                document.getElementById("pinModal").classList.add("hidden");
+                sessionStorage.setItem("isAdminLoggedIn", "true");
+            } else {
+                errorMsg.classList.remove("hidden");
+                document.getElementById("pinInput").value = "";
+            }
+        }
+
+        function logoutAdmin() {
+            sessionStorage.removeItem("isAdminLoggedIn");
+            document.getElementById("pinModal").classList.remove("hidden");
+            document.getElementById("pinInput").value = "";
+        }
+
+        window.addEventListener("DOMContentLoaded", () => {
+            if (sessionStorage.getItem("isAdminLoggedIn") === "true") {
+                const pinModal = document.getElementById("pinModal");
+                if (pinModal) pinModal.classList.add("hidden");
+            }
+            
+            const pinInput = document.getElementById("pinInput");
+            if (pinInput) {
+                pinInput.addEventListener("keypress", function(event) {
+                    if (event.key === "Enter") {
+                        verifyPin();
+                    }
+                });
+            }
+        });
+
         // FIREBASE CONFIGURATION
         const firebaseConfig = {
             apiKey: "AIzaSyCxIMvkvAjF4kp9yP74keIJErpFOH2LTRM",
@@ -1339,7 +1405,7 @@
                     <p><b>Phone Number:</b> ${custPhone}</p>
                     <p><b>Sales Representative:</b> ${salesRep}</p>
                     <p><b>Payment Method:</b> <span class="font-bold text-emerald-700">${payMethod}</span></p>
-                    ${payMethod.includes('Leasing') ? `<p><b>Leasing Company:</b> ${leaseComp || '-'} (${leaseOfficer || '-'})</p>` : ''}
+                    ${payMethod.includes('Leasing') ? `<p><b>Leasing Company:</b> ${leaseComp \vert{}\vert{} '-'} (${leaseOfficer || '-'})</p>` : ''}
                     ${payMethod.includes('Exchange') ? `<p class="text-amber-700 font-semibold"><b>Exchange Vehicle:</b> ${exModel || '-'}</p>` : ''}
                     <p><b>Sold Date:</b> ${soldDate}</p>
                 </div>
